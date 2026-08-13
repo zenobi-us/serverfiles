@@ -3,6 +3,7 @@ min_version = "2026.8.0"
 [tools]
 shellcheck = "0.11.0"
 shfmt = "3.12.0"
+usage = "3.5.4"
 
 [tasks.bootstrap]
 description = "Check the local workstation"
