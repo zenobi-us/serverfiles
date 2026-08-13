@@ -1,0 +1,5 @@
+[Network]
+NetworkName=shared
+
+[Install]
+WantedBy=multi-user.target

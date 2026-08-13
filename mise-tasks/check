@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+#MISE description="Check repository files"
+set -euo pipefail
+
+command -v git >/dev/null
+command -v ssh >/dev/null
+command -v tar >/dev/null
+
+shellcheck bin/* mise-tasks/check mise-tasks/machine/*
+shfmt -d bin/* mise-tasks/check mise-tasks/machine/*
+
+for machine in systems/*; do
+	[[ -d $machine || $(basename "$machine") == common ]] || continue
+	[[ $(basename "$machine") == common ]] && continue
+	[[ -f $machine/machine.toml ]] || {
+		echo "Missing $machine/machine.toml" >&2
+		exit 1
+	}
+	bin/render "$(basename "$machine")" >/dev/null
+done

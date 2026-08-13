@@ -1,0 +1,21 @@
+[Unit]
+Description=Minecraft server
+After=network-online.target
+Wants=network-online.target
+
+[Container]
+Image=docker.io/itzg/minecraft-server:latest
+ContainerName=minecraft
+Network=shared.network
+PublishPort=25565:25565
+Volume=/var/lib/minecraft:/data:Z
+Environment=EULA=TRUE
+Environment=TYPE=PAPER
+Environment=MEMORY=4G
+
+[Service]
+Restart=always
+TimeoutStartSec=900
+
+[Install]
+WantedBy=multi-user.target

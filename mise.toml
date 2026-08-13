@@ -1,0 +1,9 @@
+min_version = "2026.8.0"
+
+[tools]
+shellcheck = "0.11.0"
+shfmt = "3.12.0"
+
+[tasks.bootstrap]
+description = "Check the local workstation"
+run = "mise run check"

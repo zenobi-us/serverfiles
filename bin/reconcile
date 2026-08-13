@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+release=${1:?usage: bin/reconcile <release-directory>}
+quadlets=/etc/containers/systemd
+config=/etc/serverfiles/config
+state_dir=/var/lib/serverfiles
+unit_state=$state_dir/managed-units
+file_state=$state_dir/managed-quadlets
+
+[[ -d $release ]] || {
+	echo "Missing release directory: $release" >&2
+	exit 1
+}
+
+mapfile -t previous_units < <([[ -f $unit_state ]] && cat "$unit_state" || true)
+mapfile -t previous_files < <([[ -f $file_state ]] && cat "$file_state" || true)
+mapfile -t wanted_units < <([[ -f $release/units ]] && sed '/^[[:space:]]*#/d; /^[[:space:]]*$/d' "$release/units" || true)
+mapfile -t wanted_files < <([[ -d $release/quadlets ]] && find "$release/quadlets" -maxdepth 1 -type f -printf '%f\n' | sort || true)
+
+install -d -m 0755 "$quadlets" "$config" "$state_dir"
+for file in "${previous_files[@]}"; do
+	if ! printf '%s\n' "${wanted_files[@]}" | grep -Fxq -- "$file"; then
+		rm -f "$quadlets/$file"
+	fi
+done
+
+if [[ -d $release/quadlets ]]; then
+	cp -a "$release/quadlets/." "$quadlets/"
+fi
+
+rm -rf "$config"
+install -d -m 0755 "$config"
+if [[ -d $release/config ]]; then
+	cp -a "$release/config/." "$config/"
+fi
+
+systemctl daemon-reload
+
+for unit in "${previous_units[@]}"; do
+	if ! printf '%s\n' "${wanted_units[@]}" | grep -Fxq -- "$unit"; then
+		systemctl stop "$unit" || true
+	fi
+done
+
+for unit in "${wanted_units[@]}"; do
+	systemctl restart "$unit"
+done
+
+printf '%s\n' "${wanted_units[@]}" >"$unit_state"
+printf '%s\n' "${wanted_files[@]}" >"$file_state"

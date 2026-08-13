@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+machine=${1:?usage: bin/render <machine> [output]}
+root=$(git rev-parse --show-toplevel)
+source_dir="$root/systems/$machine"
+output=${2:-"$root/.rendered/$machine"}
+
+[[ -d $source_dir ]] || {
+	echo "Unknown machine: $machine" >&2
+	exit 1
+}
+
+rm -rf "$output"
+mkdir -p "$output"
+cp -a "$root/systems/common/." "$output/"
+cp -a "$source_dir/." "$output/"
+rm -f "$output/machine.toml"
+
+printf '%s\n' "$output"
