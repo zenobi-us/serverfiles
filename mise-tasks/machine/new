@@ -1,14 +1,15 @@
 #!/usr/bin/env bash
 #MISE description="Create a machine tree"
-#USAGE arg "<machine>" help="Machine name"
+#USAGE arg "<host>" help="Fully qualified host name"
 set -euo pipefail
 
-machine=${usage_machine:?}
-[[ $machine =~ ^[a-z0-9][a-z0-9-]*$ ]] || {
-	echo "Invalid machine name: $machine" >&2
+host=${usage_host:?}
+[[ $host =~ ^[a-z0-9][a-z0-9.-]*[a-z0-9]$ && $host == *.* && $host != *..* && $host != *.-* && $host != *-.* ]] || {
+	echo "Invalid host name: $host" >&2
 	exit 1
 }
 
+machine=${host//./-}
 dir="systems/$machine"
 [[ ! -e $dir ]] || {
 	echo "Machine already exists: $machine" >&2
@@ -16,6 +17,6 @@ dir="systems/$machine"
 }
 
 mkdir -p "$dir"/{quadlets,config}
-printf 'host = "%s.lan"\nuser = "core"\n' "$machine" >"$dir/machine.toml"
+printf 'host = "%s"\nuser = "core"\n' "$host" >"$dir/machine.toml"
 printf '# Add generated systemd service names, one per line.\n' >"$dir/units"
 printf 'Created %s\n' "$dir"

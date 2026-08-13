@@ -23,10 +23,10 @@ Keep mutable service data in `/var/lib/`. Do not store secrets in this repositor
 ## Add a machine
 
 ```bash
-mise run machine:new valheim
+mise run machine:new valheim.hostname.tld
 ```
 
-The default host name is `valheim.lan`. Edit `systems/valheim/machine.toml` if necessary.
+This command creates `systems/valheim-hostname-tld/`. The generated `machine.toml` uses `valheim.hostname.tld` as its host name.
 
 ## Provision a machine
 
