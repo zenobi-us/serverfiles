@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+machine=${1:?usage: bin/build-images <machine>}
+root=$(git rev-parse --show-toplevel)
+machine_dir="$root/systems/$machine"
+builds="$machine_dir/builds"
+state_dir=/var/lib/serverfiles/builds
+
+[[ -f $builds ]] || exit 0
+install -d -m 0755 "$state_dir"
+
+while IFS= read -r definition; do
+	[[ -n $definition && $definition != \#* ]] || continue
+	[[ $definition =~ ^[a-z0-9][a-z0-9-]*$ ]] || {
+		echo "Invalid image definition: $definition" >&2
+		exit 1
+	}
+
+	context="$machine_dir/definitions/$definition"
+	[[ -f $context/Containerfile ]] || {
+		echo "Missing $context/Containerfile" >&2
+		exit 1
+	}
+
+	hash=$(find "$context" -type f -printf '%P\0' | sort -z | xargs -0 -r sha256sum | sha256sum | cut -d ' ' -f1)
+	state="$state_dir/$machine-$definition.sha256"
+	image="localhost/serverfiles-$definition:latest"
+
+	if [[ -f $state && $(<"$state") == "$hash" ]] && podman image exists "$image"; then
+		continue
+	fi
+
+	podman build --pull=missing --tag "$image" --file "$context/Containerfile" "$context"
+	printf '%s\n' "$hash" >"$state"
+done <"$builds"

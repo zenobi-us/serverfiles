@@ -1,0 +1,82 @@
+#!/usr/bin/env bash
+#MISE description="Build and run a machine container locally"
+#USAGE flag "--system <system>" help="Machine tree slug"
+#USAGE flag "--definition <definition>" help="Image definition name"
+#USAGE flag "--dry-run" help="Print the run command without starting the container"
+set -euo pipefail
+
+system=${usage_system:?}
+definition=${usage_definition:?}
+dry_run=${usage_dry_run:-false}
+
+for value in "$system" "$definition"; do
+	[[ $value =~ ^[a-z0-9][a-z0-9-]*$ ]] || {
+		echo "Invalid name: $value" >&2
+		exit 1
+	}
+done
+
+root=$(git rev-parse --show-toplevel)
+context="$root/systems/$system/definitions/$definition"
+quadlet="$root/systems/$system/quadlets/$definition.container"
+image="localhost/serverfiles-$definition:latest"
+state="$root/.local/containers/$system/$definition"
+
+[[ -f $context/Containerfile ]] || {
+	echo "Missing $context/Containerfile" >&2
+	exit 1
+}
+[[ -f $quadlet ]] || {
+	echo "Missing $quadlet" >&2
+	exit 1
+}
+
+podman build --pull=missing --tag "$image" --file "$context/Containerfile" "$context"
+
+args=(
+	--rm
+	--interactive
+	--tty
+	--replace
+	--userns "keep-id:uid=1000,gid=1000"
+	--name "serverfiles-$system-$definition"
+)
+
+section=
+while IFS= read -r line; do
+	[[ $line == \[*] ]] && section=$line
+	[[ $section == '[Container]' ]] || continue
+
+	case $line in
+	Environment=*)
+		value=${line#Environment=}
+		value=${value#\"}
+		value=${value%\"}
+		args+=(--env "$value")
+		;;
+	PublishPort=*) args+=(--publish "${line#PublishPort=}") ;;
+	Volume=*)
+		volume=${line#Volume=}
+		source=${volume%%:*}
+		remainder=${volume#*:}
+		destination=${remainder%%:*}
+		options=${remainder#*:}
+		local_source="$state/$(basename "$source")"
+		mkdir -p "$local_source"
+		if [[ $options == "$remainder" ]]; then
+			args+=(--volume "$local_source:$destination")
+		else
+			args+=(--volume "$local_source:$destination:$options")
+		fi
+		;;
+	esac
+done <"$quadlet"
+
+if [[ $dry_run == true ]]; then
+	printf 'podman run'
+	printf ' %q' "${args[@]}" "$image"
+	printf '\n'
+	exit 0
+fi
+
+exec podman run "${args[@]}" "$image"

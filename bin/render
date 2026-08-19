@@ -15,6 +15,6 @@ rm -rf "$output"
 mkdir -p "$output"
 cp -a "$root/systems/common/." "$output/"
 cp -a "$source_dir/." "$output/"
-rm -f "$output/machine.toml"
+rm -rf "$output/machine.toml" "$output/definitions" "$output/builds"
 
 printf '%s\n' "$output"

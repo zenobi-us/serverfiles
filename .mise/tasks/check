@@ -4,10 +4,14 @@ set -euo pipefail
 
 command -v git >/dev/null
 command -v ssh >/dev/null
-command -v tar >/dev/null
+command -v systemd-analyze >/dev/null
 
-shellcheck bin/* mise-tasks/check mise-tasks/machine/*
-shfmt -d bin/* mise-tasks/check mise-tasks/machine/*
+shellcheck bin/* .mise/tasks/check .mise/tasks/container/* .mise/tasks/machine/*
+shfmt -d bin/* .mise/tasks/check .mise/tasks/container/* .mise/tasks/machine/*
+
+for unit in systemd/*; do
+	SYSTEMD_UNIT_PATH="$PWD/systemd" systemd-analyze cat-config "$(basename "$unit")" >/dev/null
+done
 
 for machine in systems/*; do
 	[[ -d $machine || $(basename "$machine") == common ]] || continue
