@@ -1,41 +1,45 @@
 # serverfiles
 
-This repository stores Podman Quadlet services for Fedora CoreOS hosts.
+This repository defines Podman Quadlet services for Fedora CoreOS machines.
 
-## Local setup
+The repository combines files from `systems/common/` with files from one
+machine tree. Each machine pulls and applies its state on a systemd timer.
+
+## Start here
+
+Follow the [getting-started tutorial](docs/tutorials/getting-started.md) to
+configure the local tools and create a machine tree.
+
+## Common commands
 
 ```bash
-mise trust
 mise bootstrap
-```
-
-## Repository layout
-
-- `systems/common/` contains files for all machines.
-- `systems/<machine>/` contains files for one machine.
-- Machine files replace common files with the same relative path.
-- `quadlets/` maps to `/etc/containers/systemd/`.
-- `config/` maps to `/etc/serverfiles/config/`.
-- `units` lists the generated systemd services that must run.
-
-Keep mutable service data in `/var/lib/`. Do not store secrets in this repository.
-
-## Add a machine
-
-```bash
+mise run check
 mise run machine:new valheim.hostname.tld
+mise run machine:provision valheim-hostname-tld
+mise run machine:apply --machine valheim-hostname-tld
+mise run container:run --system minecraft-lan --definition prominence
 ```
 
-This command creates `systems/valheim-hostname-tld/`. The generated `machine.toml` uses `valheim.hostname.tld` as its host name.
+Provisioning installs mise and a systemd timer on the target. Every 15 minutes,
+the timer resets its checkout to `origin/main` and applies its machine tree.
 
-## Provision a machine
+## Documentation
 
-Commit and push the required state. Then run:
+The documentation follows the Diátaxis structure.
 
-```bash
-mise run machine:provision minecraft
-```
+| Type | Use it when you need to | Documents |
+| --- | --- | --- |
+| Tutorial | Learn the workflow | [Get started](docs/tutorials/getting-started.md) |
+| How-to guide | Complete a specific task | [Add a machine](docs/how-to/add-a-machine.md), [Provision a machine](docs/how-to/provision-a-machine.md), [Manage a local image](docs/how-to/manage-local-images.md) |
+| Explanation | Understand the design | [Desired-state model](docs/explanation/desired-state-model.md) |
+| Reference | Look up exact details | [Repository reference](docs/reference/repository.md) |
 
-Provisioning uses `origin/main`. It does not deploy the local working tree.
+This repository is public. Do not store secrets in it. Manage secret values
+with fnox. Keep mutable service data in `/var/lib/` on each machine.
 
-The remote user needs passwordless `sudo`. The target needs SSH, tar, Podman, and systemd.
+Machine trees can contain local image definitions under `definitions/`. The
+target builds changed definitions before it applies Quadlet state.
+
+`container:run` builds a definition and starts it locally with the environment,
+ports, and volumes from its matching Quadlet.
