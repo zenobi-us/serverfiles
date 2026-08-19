@@ -1,0 +1,13 @@
+name = "MC Dungeons Weapons PT-BR Translation (Unofficial)"
+filename = "Mcdw-PT-BR-v1.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "f3c91a013ffd1835b72d23bce609e6c8d93d0ec5"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7194379
+project-id = 1380074

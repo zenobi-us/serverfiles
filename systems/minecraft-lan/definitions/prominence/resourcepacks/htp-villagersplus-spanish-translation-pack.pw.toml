@@ -1,0 +1,13 @@
+name = "[HTP] VillagersPlus | Spanish Translation Pack"
+filename = "HTP-Villagersplus-TranslationPack-v1.0.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "171938fd8ebb356eb708fc425e13f5640265c998"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 6835424
+project-id = 1318505

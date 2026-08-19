@@ -1,0 +1,13 @@
+name = "Stoneworks PT-BR Translation (Unofficial)"
+filename = "Stoneworks-PT-BR-v1.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "2aa01d102b0d072d04b8c93f1c0f9c6316cdc3a4"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7194442
+project-id = 1380098

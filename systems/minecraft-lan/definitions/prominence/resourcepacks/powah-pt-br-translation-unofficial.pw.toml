@@ -1,0 +1,13 @@
+name = "Powah! PT-BR Translation (Unofficial)"
+filename = "Powah-PT-BR-v1.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "84bda7c4003ebc73391acb6b7588967f84cf0523"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7194501
+project-id = 1380126

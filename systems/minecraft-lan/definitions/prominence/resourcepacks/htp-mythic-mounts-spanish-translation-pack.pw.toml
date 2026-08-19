@@ -1,0 +1,13 @@
+name = "[HTP] Mythic Mounts | Spanish Translation Pack"
+filename = "HTP-Mythicmounts-TranslationPack-vunknown.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "962102a757855563ce795b18cccca6098b41df94"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 6835358
+project-id = 1318494

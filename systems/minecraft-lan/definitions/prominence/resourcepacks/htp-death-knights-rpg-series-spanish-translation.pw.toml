@@ -1,0 +1,13 @@
+name = "[HTP] Death Knights (RPG Series) | Spanish Translation Pack"
+filename = "HTP-Death_knights-TranslationPack-v1.0.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "38620770cebadc185cc127b76e0216e4dbafc925"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 6963448
+project-id = 1341097

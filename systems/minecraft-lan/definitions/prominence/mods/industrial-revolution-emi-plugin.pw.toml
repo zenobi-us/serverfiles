@@ -1,0 +1,13 @@
+name = "Industrial Revolution EMI Plugin"
+filename = "indrev-emi-plugin-1.0.1.jar"
+side = "both"
+
+[download]
+hash-format = "sha1"
+hash = "fb51ad9ba34493548063e58a442bf65d3a9216e7"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 6814788
+project-id = 1308125

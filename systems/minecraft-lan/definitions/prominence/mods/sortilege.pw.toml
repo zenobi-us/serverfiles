@@ -1,0 +1,13 @@
+name = "Sortilege"
+filename = "Sortilege-1.20.1-1.7.5.jar"
+side = "both"
+
+[download]
+hash-format = "sha1"
+hash = "c0781c54a730f338516888a6253ace3276921645"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7738553
+project-id = 882488

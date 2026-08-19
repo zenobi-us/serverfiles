@@ -1,0 +1,13 @@
+name = "Marium's Soulslike Weaponry PT-BR Translation (Unofficial)"
+filename = "Soulsweapons-PT-BR-v1.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "223be290bfbbf395c3d2e793879bf2f56c715c0d"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7194525
+project-id = 1380130

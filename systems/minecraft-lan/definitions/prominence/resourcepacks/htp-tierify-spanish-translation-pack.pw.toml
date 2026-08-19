@@ -1,0 +1,13 @@
+name = "[HTP] Tierify | Spanish Translation Pack"
+filename = "HTP-Tierify-TranslationPack-v1.0.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "a40ac3e01ed6cfa7202776fab0815b71374e7e57"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 6932892
+project-id = 1335604

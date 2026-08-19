@@ -1,0 +1,13 @@
+name = "[HTP] YUNG's Better Nether Fortresses (Fabric) | Spanish Translation Pack"
+filename = "HTP-Betterfortresses-TranslationPack-v1.0.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "521cb8d85bb590df0801858f10af1ec873ac8327"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 6934778
+project-id = 1335968

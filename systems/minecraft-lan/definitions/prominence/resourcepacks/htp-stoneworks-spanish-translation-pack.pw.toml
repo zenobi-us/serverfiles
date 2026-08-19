@@ -1,0 +1,13 @@
+name = "[HTP] Stoneworks | Spanish Translation Pack"
+filename = "HTP-Stoneworks-TranslationPack-v1.0.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "8a08608ed6fd8aece39185a64fd06606cdcabd17"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7743260
+project-id = 1483513

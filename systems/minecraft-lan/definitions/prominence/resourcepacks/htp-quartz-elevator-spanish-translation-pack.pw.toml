@@ -1,0 +1,13 @@
+name = "[HTP] Quartz Elevator | Spanish Translation Pack"
+filename = "HTP-Quartzelv-TranslationPack-v1.0.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "e3642950fa6618a984e7d8458f879f09f8d92f84"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 6963332
+project-id = 1341075

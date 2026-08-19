@@ -1,0 +1,13 @@
+name = "FTB X EMI Compat"
+filename = "ftbxemicompat-no-ambient-1.0.1.jar"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "84bb780b63de813df7c3b7d204ebc78a577c51d1"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7920534
+project-id = 1512841

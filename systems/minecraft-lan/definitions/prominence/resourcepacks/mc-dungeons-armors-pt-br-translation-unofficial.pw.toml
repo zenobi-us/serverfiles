@@ -1,0 +1,13 @@
+name = "Dungeons Armors PT-BR Translation (Unofficial)"
+filename = "Mcda-PT-BR-v1.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "b7170561e6364adbff08aa80d08be26fe650da37"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7456783
+project-id = 1380118

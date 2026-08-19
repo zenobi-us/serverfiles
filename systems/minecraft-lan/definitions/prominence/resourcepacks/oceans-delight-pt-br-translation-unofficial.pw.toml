@@ -1,0 +1,13 @@
+name = "Ocean's Delight PT-BR Translation (Unofficial)"
+filename = "Oceansdelight-PT-BR-v1.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "5fc2d47ff278b99eaad95f0950b5e1321ed928e0"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7194494
+project-id = 1380123

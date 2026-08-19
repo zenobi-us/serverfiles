@@ -1,0 +1,13 @@
+name = "[HTP] Promenade | Spanish Translation Pack"
+filename = "HTP-Promenade-TranslationPack-v1.0.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "0694969d0bcf4f4a03d2fe471bc2800a3d0643c0"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 6932850
+project-id = 1335595

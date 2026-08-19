@@ -1,0 +1,13 @@
+name = "[HTP] Magnum Torch | Spanish Translation Pack"
+filename = "HTP-Magnumtorch-TranslationPack-v1.0.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "5be25c42963996fe736593520b291ca627adcce7"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 6934863
+project-id = 1335984

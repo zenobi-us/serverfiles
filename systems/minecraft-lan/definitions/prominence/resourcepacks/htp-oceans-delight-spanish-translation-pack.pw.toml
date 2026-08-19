@@ -1,0 +1,13 @@
+name = "[HTP] Ocean's Delight | Spanish Translation Pack"
+filename = "HTP-Oceansdelight-TranslationPack-v1.0.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "e4373cf2926b7ecee484d8931009b3fcaf2ebb16"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 6963459
+project-id = 1341100

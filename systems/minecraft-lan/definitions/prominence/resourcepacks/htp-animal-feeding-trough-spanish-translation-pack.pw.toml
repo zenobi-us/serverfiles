@@ -1,0 +1,13 @@
+name = "[HTP] Animal Feeding Trough | Spanish Translation Pack"
+filename = "HTP-Animal_feeding_trough-TranslationPack-v1.0.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "fd9ddb8f4f763abf61911ea5567cced97fb3f787"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 6805090
+project-id = 1312911

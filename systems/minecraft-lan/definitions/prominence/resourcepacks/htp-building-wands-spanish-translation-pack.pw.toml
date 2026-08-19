@@ -1,0 +1,13 @@
+name = "[HTP] Building Wands | Spanish Translation Pack"
+filename = "HTP-Wands-TranslationPack-v1.0.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "5f1fb54b75f53c9e763471c88d08cf563fa70817"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 6963329
+project-id = 1341074

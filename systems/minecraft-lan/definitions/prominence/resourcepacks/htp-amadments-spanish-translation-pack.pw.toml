@@ -1,0 +1,13 @@
+name = "[HTP] Amadments | Spanish Translation Pack"
+filename = "HTP-Amendments-TranslationPack-v1.0.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "20d01c80d71fb0993f8ddd265b38bea80918c08d"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7194289
+project-id = 1380031

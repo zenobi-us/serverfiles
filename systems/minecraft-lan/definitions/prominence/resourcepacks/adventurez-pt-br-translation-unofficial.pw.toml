@@ -1,0 +1,13 @@
+name = "AdventureZ PT-BR Translation (Unofficial)"
+filename = "Adventurez-PT-BR-v1.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "0054ab745c0e57d3128ed1145aedd197b65701c9"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7194408
+project-id = 1380082

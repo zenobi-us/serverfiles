@@ -1,0 +1,13 @@
+name = "Death Knights (RPG Series) PT-BR Translation (Unofficial)"
+filename = "Death_knights-PT-BR-v1.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "4f31a1a7e45817c979b361b97b33087068311853"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7194353
+project-id = 1380054

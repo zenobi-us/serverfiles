@@ -1,0 +1,13 @@
+name = "Zenith Renewed"
+filename = "zenith_renewed-2.0.1.jar"
+side = "both"
+
+[download]
+hash-format = "sha1"
+hash = "be71daa14e43fa2b6c53b698c9944ffa5ef1edab"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7957639
+project-id = 1514479

@@ -1,0 +1,13 @@
+name = "Artifact Protection - Prominence II"
+filename = "artifact_protection.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "7bf4119576199ba8108628eb7251b5e5747aeeec"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7325887
+project-id = 1403306

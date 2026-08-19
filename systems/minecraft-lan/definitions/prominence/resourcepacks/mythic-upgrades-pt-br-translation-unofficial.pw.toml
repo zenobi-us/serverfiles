@@ -1,0 +1,13 @@
+name = "Mythic Upgrades PT-BR Translation (Unofficial)"
+filename = "Mythicupgrades-PT-BR-v1.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "906e80efba54137995c9d657e590431f22bc47ac"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7194387
+project-id = 1380078

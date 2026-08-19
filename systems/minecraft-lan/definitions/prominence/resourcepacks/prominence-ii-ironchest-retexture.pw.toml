@@ -1,0 +1,13 @@
+name = "Prominence II | IronChest Retexture"
+filename = "12_Prominence_2_IrCh.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "01ca1ad7b989e98dd370a5e4edc0cf489f2ec5a6"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 5967714
+project-id = 1154341

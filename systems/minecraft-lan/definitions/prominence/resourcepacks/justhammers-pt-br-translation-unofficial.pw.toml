@@ -1,0 +1,13 @@
+name = "JustHammers PT-BR Translation (Unofficial)"
+filename = "Justhammers-PT-BR-v1.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "ec9d4f570627bddd1a20f93bb9b6ceb19e2fc94a"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7194480
+project-id = 1380114

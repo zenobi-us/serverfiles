@@ -1,0 +1,13 @@
+name = "[HTP] Philip's Ruins | Spanish Translation Pack"
+filename = "HTP-Philipsruins-TranslationPack-v1.0.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "101065f3658341d24ed1611165b24a3f251706b9"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 6963286
+project-id = 1341059

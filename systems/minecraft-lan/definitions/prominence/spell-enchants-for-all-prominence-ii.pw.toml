@@ -1,0 +1,13 @@
+name = "Spell Enchants for All! - Prominence II"
+filename = "spell_enchants_for_all_1.1.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "c4f5fa679950d89c49bc1b4ea0fe62aaada1727b"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7407447
+project-id = 1406214

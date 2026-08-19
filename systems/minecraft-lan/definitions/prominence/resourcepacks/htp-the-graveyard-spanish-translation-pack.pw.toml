@@ -1,0 +1,13 @@
+name = "[HTP] The Graveyard | Spanish Translation Pack"
+filename = "HTP-Graveyard-TranslationPack-v1.0.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "4de824ce564aae4634d47b3fa3fb7892f4a388f6"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 6934689
+project-id = 1335946

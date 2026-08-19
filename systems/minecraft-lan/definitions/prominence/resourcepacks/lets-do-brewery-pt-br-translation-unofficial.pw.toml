@@ -1,0 +1,13 @@
+name = "[Let's Do] Brewery PT-BR Translation (Unofficial)"
+filename = "Brewery-PT-BR-v1.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "96bf8d60f8c5cc08b415aa0eb7d0af793c799700"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7194342
+project-id = 1380050

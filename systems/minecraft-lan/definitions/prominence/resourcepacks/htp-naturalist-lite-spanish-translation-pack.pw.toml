@@ -1,0 +1,13 @@
+name = "[HTP] Naturalist Lite | Spanish Translation Pack"
+filename = "HTP-Naturalist-TranslationPack-v1.0.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "c82309d37802daffa3349642becea0265f6864b9"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 6963426
+project-id = 1341091

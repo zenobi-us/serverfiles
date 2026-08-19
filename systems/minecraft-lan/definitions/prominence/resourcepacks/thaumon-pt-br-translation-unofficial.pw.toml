@@ -1,0 +1,13 @@
+name = "Thaumon PT-BR Translation (Unofficial)"
+filename = "Thaumon-PT-BR-v1.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "fe552a5b40d2aabdaefd4441d4344a046616958d"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7194448
+project-id = 1380100

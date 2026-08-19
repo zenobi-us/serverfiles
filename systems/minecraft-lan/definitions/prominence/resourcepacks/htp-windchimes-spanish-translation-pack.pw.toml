@@ -1,0 +1,13 @@
+name = "[HTP] Windchimes | Spanish Translation Pack"
+filename = "HTP-Windchimes-TranslationPack-v1.0.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "9c63b4226a288738b6e5738e4b8a795161db8866"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 6932855
+project-id = 1335596

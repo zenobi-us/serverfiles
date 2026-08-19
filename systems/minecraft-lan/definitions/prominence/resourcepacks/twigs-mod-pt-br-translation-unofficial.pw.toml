@@ -1,0 +1,13 @@
+name = "Twigs PT-BR Translation (Unofficial)"
+filename = "Twigs-PT-BR-v1.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "2ca36202457cb9d557f1f1d99dfa961d6c6bc775"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7194537
+project-id = 1380132

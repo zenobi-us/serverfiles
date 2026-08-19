@@ -1,0 +1,13 @@
+name = "Archon Reforged"
+filename = "Archon Reforged.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "4d60b9bdb389e71febf85c3d8b311c84e49274c4"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7012532
+project-id = 1349971

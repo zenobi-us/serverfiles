@@ -1,0 +1,13 @@
+name = "Wizards (RPG Series) PT-BR Translation (Unofficial)"
+filename = "Wizards-PT-BR-v1.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "4a03e9cb3204c1a2053c119da974ea90593bd7cb"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7194470
+project-id = 1380111

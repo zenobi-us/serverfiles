@@ -1,0 +1,13 @@
+name = "[HTP] Spell Power Attributes | Spanish Translation Pack"
+filename = "HTP-Spell_power-TranslationPack-vunknown.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "21ffa99ea8bd1ffeeba8596eae40b84378f2f748"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 5060621
+project-id = 966998

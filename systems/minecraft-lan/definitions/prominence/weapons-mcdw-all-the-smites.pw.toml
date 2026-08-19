@@ -1,0 +1,13 @@
+name = "Spell compat for MCDW - All the Smites"
+filename = "mcdw_all_the_smites-1.20.1_1.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "abe39d83c07b8ada5ad85b31e85f1dbabc50e2ab"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7152486
+project-id = 1372801

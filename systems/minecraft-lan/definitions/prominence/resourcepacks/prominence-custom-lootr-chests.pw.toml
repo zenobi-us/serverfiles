@@ -1,0 +1,13 @@
+name = "Prominence's Custom Lootr Chests"
+filename = "Prominence-Custom-Lootr.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "7c06954da01e05a21219fd287017a730d7169462"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 5052991
+project-id = 965614

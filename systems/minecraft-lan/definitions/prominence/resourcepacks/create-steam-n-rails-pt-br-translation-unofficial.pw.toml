@@ -1,0 +1,13 @@
+name = "Create: Steam 'n' Rails PT-BR Translation (Unofficial)"
+filename = "railways-PT-BR-v1.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "7c505800b8be5ddb233dc639b4b6458ee72f26a0"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7282101
+project-id = 1395867

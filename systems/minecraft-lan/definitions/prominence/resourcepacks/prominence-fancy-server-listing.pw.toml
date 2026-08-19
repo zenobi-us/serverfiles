@@ -1,0 +1,13 @@
+name = "Prominence Fancy Server Listing"
+filename = "ProminenceFancyServerListing.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "3155d0d67013ba07c3a14d80e2d0fb144de28944"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 5068299
+project-id = 963044

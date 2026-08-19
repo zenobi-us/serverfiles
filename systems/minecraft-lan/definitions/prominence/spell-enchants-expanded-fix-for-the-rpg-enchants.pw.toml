@@ -1,0 +1,13 @@
+name = "Spell Enchants Expanded - Fix for the RPG Enchants"
+filename = "spell_enchants_for_all_armor_edition_1.20.1-1.2.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "69bcddfdac10b4f3098d1b8f1ef9967c6b9b77ce"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7864843
+project-id = 1411033

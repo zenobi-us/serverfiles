@@ -1,0 +1,13 @@
+name = "Ashen + Let's Do Support"
+filename = "Ashen_Lets_Do_Support_1.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "2346e672a6946f217b6f00e4f47c9de7b63a90a2"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 5690829
+project-id = 1096454

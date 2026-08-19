@@ -1,0 +1,13 @@
+name = "Ashen 16x"
+filename = "Ashen_16x.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "8860a86fb43140289b3d72dbf14707c5a47c4a7b"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7423654
+project-id = 864112

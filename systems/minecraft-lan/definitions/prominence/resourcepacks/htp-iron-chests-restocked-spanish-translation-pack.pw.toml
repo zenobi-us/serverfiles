@@ -1,0 +1,13 @@
+name = "[HTP] Iron Chests: Restocked | Spanish Translation Pack"
+filename = "HTP-Ironchests-TranslationPack-v1.0.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "cb6ae80325482893f48d0d779d8052074637d22e"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 6963420
+project-id = 1341089

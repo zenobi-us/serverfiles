@@ -1,0 +1,13 @@
+name = "Supplementaries PT-BR Translation (Unofficial)"
+filename = "Supplementaries-PT-BR-v1.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "b565caf8fcb35f3110e6abd2aef16dd2435e41d3"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7194534
+project-id = 1380131

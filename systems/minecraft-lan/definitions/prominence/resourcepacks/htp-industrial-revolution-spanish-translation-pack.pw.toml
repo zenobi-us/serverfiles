@@ -1,0 +1,13 @@
+name = "[HTP] Industrial Revolution | Spanish Translation Pack"
+filename = "HTP-Industrial revolution-TranslationPack-v1.0.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "8e5b10277ef0f164fa4ac99e1529c30754e20ed8"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7194258
+project-id = 1380016

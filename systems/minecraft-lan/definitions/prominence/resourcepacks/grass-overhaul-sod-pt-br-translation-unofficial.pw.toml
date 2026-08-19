@@ -1,0 +1,13 @@
+name = "Grass Overhaul (Sod) PT-BR Translation (Unofficial)"
+filename = "Grassoverhaul-PT-BR-v1.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "884420d1bfe8dd81cddad1f0519685b894b85627"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7194371
+project-id = 1380070

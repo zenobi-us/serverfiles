@@ -1,0 +1,13 @@
+name = "Zenith PT-BR Translation (Unofficial)"
+filename = "Zenith-PT-BR-v1.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "a055eb57cb92d97697ed14c50e977ce7711bc730"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7194544
+project-id = 1380135

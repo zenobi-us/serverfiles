@@ -1,0 +1,13 @@
+name = "[HTP] Ad Astra: Giselle Addon | Spanish Translation Pack"
+filename = "HTP-Ad_astra_giselle_addon-TranslationPack-v1.0.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "7bb48e06a4ec8533ef553e907ed79fa3a8e7c542"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 6805068
+project-id = 1312904

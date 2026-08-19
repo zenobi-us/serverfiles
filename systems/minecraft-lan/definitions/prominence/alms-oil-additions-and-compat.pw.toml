@@ -1,0 +1,13 @@
+name = "Alm's Oil Additions and Compat"
+filename = "alms_oil_compat_1.20.1-1.0.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "02efb26427ad182c9e2b3d9ae7b44cbfa4deb6d5"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7350390
+project-id = 1408298

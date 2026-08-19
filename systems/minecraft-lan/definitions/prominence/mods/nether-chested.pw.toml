@@ -1,0 +1,13 @@
+name = "Nether Chested"
+filename = "NetherChested-v8.0.4-1.20.1-Fabric.jar"
+side = "both"
+
+[download]
+hash-format = "sha1"
+hash = "0c9dcb6f156cc23da300858c35cdf202b528dac3"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 5690531
+project-id = 857971

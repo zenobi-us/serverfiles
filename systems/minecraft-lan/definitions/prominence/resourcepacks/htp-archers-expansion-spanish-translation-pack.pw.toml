@@ -1,0 +1,13 @@
+name = "[HTP] Archers Expansion | Spanish Translation Pack"
+filename = "HTP-Archers_expansion-TranslationPack-v1.0.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "03c07eb2bbc2490e9bfcd5f6e5229da674120b2a"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 6805082
+project-id = 1312909

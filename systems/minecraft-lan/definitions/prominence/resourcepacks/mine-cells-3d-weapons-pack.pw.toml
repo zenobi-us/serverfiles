@@ -1,0 +1,13 @@
+name = "Mine Cells - 3D Weapons Pack"
+filename = "§cMine_Cells§6_3D_Weapons§8_1.0.1.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "7156783aef6e31cdd09e19bd81a7169b752a2b2e"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 5132915
+project-id = 977843

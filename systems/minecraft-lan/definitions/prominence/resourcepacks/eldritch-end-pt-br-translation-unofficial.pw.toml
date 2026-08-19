@@ -1,0 +1,13 @@
+name = "Eldritch End PT-BR Translation (Unofficial)"
+filename = "Eldritch_end-PT-BR-v1.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "968cb518d4ba4dcdc604895785955a58ecafd0b5"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7194451
+project-id = 1380102

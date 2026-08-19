@@ -1,0 +1,13 @@
+name = "Bewitchment PT-BR Translation (Unofficial)"
+filename = "Bewitchment-PT-BR-v1.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "d11f8ecbe3977ba8b75fa0d1873e010c372880b1"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7194428
+project-id = 1380094

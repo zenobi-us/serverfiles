@@ -1,0 +1,27 @@
+[Unit]
+Description=Prominence II - Hasturian Era Minecraft server
+After=network-online.target
+Wants=network-online.target
+
+[Container]
+Image=localhost/serverfiles-prominence:latest
+ContainerName=prominence
+Network=shared.network
+PublishPort=25565:25565
+Volume=/var/lib/minecraft/prominence/data:/data:Z
+Environment=EULA=TRUE
+Environment=TYPE=FABRIC
+Environment=VERSION=1.20.1
+Environment=FABRIC_LOADER_VERSION=0.18.4
+Environment=MEMORY=9504M
+Environment=ONLINE_MODE=FALSE
+Environment=ENFORCE_SECURE_PROFILE=FALSE
+Environment=OVERRIDE_SERVER_PROPERTIES=TRUE
+Environment="MOTD=Prominence II - Hasturian Era"
+
+[Service]
+Restart=always
+TimeoutStartSec=1800
+
+[Install]
+WantedBy=multi-user.target

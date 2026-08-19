@@ -1,0 +1,13 @@
+name = "Mythic Mounts PT-BR Translation (Unofficial)"
+filename = "Mythicmounts-PT-BR-v1.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "c87f49f87df050a27ee16949d7f12005e7dd4c57"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7194384
+project-id = 1380077

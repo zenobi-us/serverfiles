@@ -1,0 +1,13 @@
+name = "[HTP] Eldritch End | Spanish Translation Pack"
+filename = "HTP-Eldritch_end-TranslationPack-v1.0.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "ac542c0b1296f4166748ffcfa12cccf096a1d9e1"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 6934829
+project-id = 1335979

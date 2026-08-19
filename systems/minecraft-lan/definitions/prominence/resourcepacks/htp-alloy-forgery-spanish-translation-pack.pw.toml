@@ -1,0 +1,13 @@
+name = "[HTP] Alloy Forgery | Spanish Translation Pack"
+filename = "HTP-Alloy_forgery-TranslationPack-v1.0.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "6e1cb9ef1b4e72d6c61075a864d3db0c2e5d51b3"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 6934883
+project-id = 1335988

@@ -1,0 +1,13 @@
+name = "Create Questing"
+filename = "Create_Questing-FABRIC-1.20.1-1.0.0.jar"
+side = "both"
+
+[download]
+hash-format = "sha1"
+hash = "f06c3a1b395ed0f6f7c7bc9c10899e70d71c3bb1"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 5036927
+project-id = 591861

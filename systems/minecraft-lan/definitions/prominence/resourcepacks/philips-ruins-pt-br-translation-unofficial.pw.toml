@@ -1,0 +1,13 @@
+name = "Philip's Ruins PT-BR Translation (Unofficial)"
+filename = "Philipsruins-PT-BR-v1.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "dad4342365f1d8cee0cb72c97615de55f8ea5160"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7194411
+project-id = 1380086

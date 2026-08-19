@@ -1,0 +1,13 @@
+name = "Applied Botanics Addon PT-BR Translation (Unofficial)"
+filename = "Appbot-PT-BR-v1.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "ea208d471fa8b17918857b058fd303e8e7368401"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7194317
+project-id = 1380043

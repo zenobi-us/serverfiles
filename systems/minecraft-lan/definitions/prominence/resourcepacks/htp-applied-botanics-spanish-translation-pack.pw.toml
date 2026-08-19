@@ -1,0 +1,13 @@
+name = "[HTP] Applied Botanics | Spanish Translation Pack"
+filename = "HTP-Appbot-TranslationPack-v1.0.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "d8135e9458247b9e06087b13e9c98a8ba286831b"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 6805120
+project-id = 1312915

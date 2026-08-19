@@ -1,0 +1,13 @@
+name = "Deeper and Darker PT-BR Translation (Unofficial)"
+filename = "Deeperdarker-PT-BR-v1.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "722e96102487e1a420bb02e463d7f0eb63b69c55"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7194361
+project-id = 1380057

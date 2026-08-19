@@ -1,0 +1,13 @@
+name = "[HTP] [Let's Do] Vinery | Spanish Translation Pack"
+filename = "HTP-Vinery-TranslationPack-v1.0.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "42cfb02a3710c000d75233186c7b6c1175d214ac"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 6835379
+project-id = 1318497

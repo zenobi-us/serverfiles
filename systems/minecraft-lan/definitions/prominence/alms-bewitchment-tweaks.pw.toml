@@ -1,0 +1,13 @@
+name = "Alm's Bewitchment Tweaks"
+filename = "alms_bewitchment_tweaks-1.20.1-1.1.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "061bcc88fda206c6867f921e9fdc3b11bdb0b26a"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7653940
+project-id = 1467354

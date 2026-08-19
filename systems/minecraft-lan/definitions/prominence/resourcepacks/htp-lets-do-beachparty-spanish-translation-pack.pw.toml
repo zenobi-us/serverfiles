@@ -1,0 +1,13 @@
+name = "[HTP] [Let's Do] Beachparty | Spanish Translation Pack"
+filename = "HTP-Beachparty-TranslationPack-v1.0.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "31ec204c45e567e72cb4d4f654fd552dfe16c5d3"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 6835343
+project-id = 1318487

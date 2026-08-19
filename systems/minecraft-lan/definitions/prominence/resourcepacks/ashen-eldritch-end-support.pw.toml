@@ -1,0 +1,13 @@
+name = "Ashen + Eldritch End Support"
+filename = "Ashen_Eldritch_End_Support_1.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "482bdbece6ddcc18668f57f4aeb12a5e4b9ae76a"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 5690754
+project-id = 1096434

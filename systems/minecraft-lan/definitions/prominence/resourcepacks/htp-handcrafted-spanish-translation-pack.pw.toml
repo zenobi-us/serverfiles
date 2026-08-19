@@ -1,0 +1,13 @@
+name = "[HTP] HandCrafted | Spanish Translation Pack"
+filename = "HTP-Handcrafted-TranslationPack-v1.0.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "251dbf0052b49d745791e9f94c3227a111621c70"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 6932668
+project-id = 1335567

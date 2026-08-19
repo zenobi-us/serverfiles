@@ -1,0 +1,13 @@
+name = "Mim1q's Derelict PT-BR Translation (Unofficial)"
+filename = "Derelict-PT-BR-v1.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "09a460fc9d2486740fef3c2ffa774b03eca2f04e"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7194363
+project-id = 1380058

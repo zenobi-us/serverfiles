@@ -1,0 +1,13 @@
+name = "[HTP] Mythic Upgrade | Spanish Translation Pack"
+filename = "HTP-Mythic upgrade-TranslationPack-v1.0.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "63aad264f1d2ea5d1367fc0c1f3265d868fd99aa"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7194263
+project-id = 1380017

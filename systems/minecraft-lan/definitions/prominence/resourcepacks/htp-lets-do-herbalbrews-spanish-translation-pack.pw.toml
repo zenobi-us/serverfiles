@@ -1,0 +1,13 @@
+name = "[HTP] [Let's Do] HerbalBrews | Spanish Translation Pack"
+filename = "HTP-Herbalbrews-TranslationPack-v1.0.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "df7dfb5e54628990237fcfe670272be73b2e0f8d"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 6835349
+project-id = 1318488

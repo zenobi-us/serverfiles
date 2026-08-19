@@ -1,0 +1,13 @@
+name = "[Let's Do] Vinery PT-BR Translation (Unofficial)"
+filename = "Vinery-PT-BR-v1.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "ba8b9f6e3f42a035bcacb1dec1e73ee3980e342d"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7194467
+project-id = 1380108

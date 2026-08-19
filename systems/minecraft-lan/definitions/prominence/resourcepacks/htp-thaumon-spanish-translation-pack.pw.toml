@@ -1,0 +1,13 @@
+name = "[HTP] Thaumon | Spanish Translation Pack"
+filename = "HTP-Thaumon-TranslationPack-v1.0.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "cf2ae6a9d07728c13c5148082b26ecbcdf22da32"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 6932919
+project-id = 1335611

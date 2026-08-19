@@ -1,0 +1,13 @@
+name = "[HTP] ME Requester | Spanish Translation Pack"
+filename = "HTP-Merequester-TranslationPack-v1.0.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "8f6a88a63f10d309874f9ea61e33f80796cc377f"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 6963297
+project-id = 1341064

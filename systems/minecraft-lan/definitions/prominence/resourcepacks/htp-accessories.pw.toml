@@ -1,0 +1,13 @@
+name = "[HTP] Accessories | Spanish Translation Pack"
+filename = "HTP-Accessories-TranslationPack-v1.0.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "e52556964d5a650cf903c3f274ca13bca3399dc9"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 5734187
+project-id = 1104926

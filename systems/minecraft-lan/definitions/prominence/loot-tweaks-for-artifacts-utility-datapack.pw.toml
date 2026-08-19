@@ -1,0 +1,13 @@
+name = "Loot Tweaks For Artifacts - Utility Datapack for Prominence II"
+filename = "artifacts_loot_table_tweaks_1.20.1_1.0.1.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "7bb164a0884f932b244c6a2d9de26fc4846ede6d"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7259210
+project-id = 1370867

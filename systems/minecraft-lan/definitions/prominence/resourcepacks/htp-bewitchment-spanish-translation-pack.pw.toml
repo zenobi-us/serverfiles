@@ -1,0 +1,13 @@
+name = "[HTP] Bewitchment | Spanish Translation Pack"
+filename = "HTP-Bewitchment-TranslationPack-v1.0.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "cb0440d56037145be188997a992308809b146ad2"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 6963432
+project-id = 1341096

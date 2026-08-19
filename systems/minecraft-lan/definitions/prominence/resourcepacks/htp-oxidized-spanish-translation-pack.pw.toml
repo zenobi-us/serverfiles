@@ -1,0 +1,13 @@
+name = "[HTP] Oxidized | Spanish Translation Pack"
+filename = "HTP-Oxidized-TranslationPack-v1.0.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "653975d64f29109becd71f8e6039c1cb2d91dde7"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 6934842
+project-id = 1335982

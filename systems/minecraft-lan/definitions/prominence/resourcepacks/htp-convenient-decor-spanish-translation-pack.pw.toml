@@ -1,0 +1,13 @@
+name = "[HTP] Convenient Decor | Spanish Translation Pack"
+filename = "HTP-Convenientdecor-TranslationPack-v1.0.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "1820a3bdb132fc037df51ef6b618f3d37a7221c2"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 6963406
+project-id = 1341088

@@ -1,0 +1,13 @@
+name = "Runic Grimoire Remover | Datapack"
+filename = "RunicGrimoireDisabler.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "d598d780ba7ec857d5b2b24c2fdc53701757f427"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 5038540
+project-id = 963059

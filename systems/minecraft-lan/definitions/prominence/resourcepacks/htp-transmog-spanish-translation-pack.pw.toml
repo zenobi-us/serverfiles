@@ -1,0 +1,13 @@
+name = "[HTP] Transmog | Spanish Translation Pack"
+filename = "HTP-Transmog-TranslationPack-v1.0.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "9bcaa22107c33c0dbe4dd24df005920229f003a1"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 6963453
+project-id = 1341099

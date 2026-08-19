@@ -1,0 +1,13 @@
+name = "[HTP] AE2 Wireless Terminal Library | Spanish Translation Pack"
+filename = "HTP-Ae2wtlib-TranslationPack-v1.0.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "6b2d6baf24b07f30b83bf7f618fae1cb779cea13"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 6805095
+project-id = 1312912

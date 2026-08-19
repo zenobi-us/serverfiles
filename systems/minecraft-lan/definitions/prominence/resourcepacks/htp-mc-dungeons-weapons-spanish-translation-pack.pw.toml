@@ -1,0 +1,13 @@
+name = "[HTP] MC Dungeons Weapons | Spanish Translation Pack"
+filename = "HTP-Mcdw-TranslationPack-v1.0.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "1f917c360402f674954b171f45987c0d48335ae2"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 6932813
+project-id = 1335586

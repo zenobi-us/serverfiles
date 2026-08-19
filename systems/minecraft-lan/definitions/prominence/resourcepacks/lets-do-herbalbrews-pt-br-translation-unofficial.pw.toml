@@ -1,0 +1,13 @@
+name = "[Let's Do] HerbalBrews PT-BR Translation (Unofficial)"
+filename = "Herbalbrews-PT-BR-v1.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "22e0b0cb4a44081180783ab6aa1de2819c75bc67"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7194476
+project-id = 1380113

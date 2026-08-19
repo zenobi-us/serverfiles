@@ -1,0 +1,13 @@
+name = "Only Excavators - Recipe Balancing "
+filename = "onlyExcavators-balancing-1.20.1-1.0.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "411a68a22e9b4a7819d244ec02011b6e0ebcd55c"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7261066
+project-id = 1391760

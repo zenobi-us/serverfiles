@@ -1,0 +1,13 @@
+name = "KleeSlabs (Outdated Versions)"
+filename = "kleeslabs-fabric-1.20-15.0.4.jar"
+side = "both"
+
+[download]
+hash-format = "sha1"
+hash = "6d48ad12a53b7ed9c6218da0eadf975b18ba1a26"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 6119983
+project-id = 547695

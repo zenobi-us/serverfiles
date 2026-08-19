@@ -1,0 +1,13 @@
+name = "MCDA - Lightning Unlimited"
+filename = "lightning_unlimited-1.20.1-1.1.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "8fc0f8793c11b94f6edbad9595d075deadda3df8"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7868696
+project-id = 1411279

@@ -1,0 +1,13 @@
+name = "Create: New Age PT-BR Translation (Unofficial)"
+filename = "Create_new_age-PT-BR-v1.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "f9736ab0e468c64418e1794e04b2a692df7262dc"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7194349
+project-id = 1380052

@@ -1,0 +1,13 @@
+name = "Industrial Revolution PT-BR Translation (Unofficial)"
+filename = "Indrev-PT-BR-v1.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "e70fa37f75b76663a834cb28308c81c0500e3a0e"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7194378
+project-id = 1380073

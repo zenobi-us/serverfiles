@@ -1,0 +1,13 @@
+name = "Hellion's Sniffer+"
+filename = "Sniffer+-fabric-1.20.1-0.3.0.jar"
+side = "both"
+
+[download]
+hash-format = "sha1"
+hash = "585bdb2eebc53d7e4774a2659958cd2543716a60"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 5277884
+project-id = 871962

@@ -1,0 +1,13 @@
+name = "[HTP] Archon | Spanish Translation Pack"
+filename = "HTP-Archon-TranslationPack-v1.0.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "3699f8bcc3a15f31d6a123ee81aa3b4207d9cefd"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 6805076
+project-id = 1312907

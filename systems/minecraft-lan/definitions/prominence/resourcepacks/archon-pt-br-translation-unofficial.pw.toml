@@ -1,0 +1,13 @@
+name = "Archon PT-BR Translation (Unofficial)"
+filename = "Archon-PT-BR-v1.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "8231620e0f0a6798f14ecebe7a99b50d64c6d494"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7194414
+project-id = 1380088

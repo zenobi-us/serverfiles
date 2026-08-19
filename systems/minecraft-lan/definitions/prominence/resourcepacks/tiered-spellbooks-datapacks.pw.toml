@@ -1,0 +1,13 @@
+name = "Tiered Spellbooks"
+filename = "Tiered_Spellbooks.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "34398b9eddbb260b2711d5bfe8b5427b975ee3cb"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 6361405
+project-id = 1230893

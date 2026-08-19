@@ -1,0 +1,13 @@
+name = "[HTP] End Remastered | Spanish Translation Pack"
+filename = "HTP-Endrem-TranslationPack-v1.0.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "b8d4871ed5e279a2a6dfdf68c89f8be43fe77786"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 6805047
+project-id = 1312893

@@ -1,0 +1,13 @@
+name = "Ashen + Eating Animation Support"
+filename = "Ashen_Eating_Animation_Support_1.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "28f86fc1f4c7c8377d9719b916f4d8cba1ab379d"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 5730289
+project-id = 1104239

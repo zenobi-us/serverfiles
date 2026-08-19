@@ -1,0 +1,13 @@
+name = "Only Excavators - Ashen Style"
+filename = "Only Excavators - Ashen AddOn.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "67a3f6f28be2c22ed9156766c1fa9d68666d2484"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7272441
+project-id = 1393963

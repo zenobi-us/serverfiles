@@ -1,0 +1,13 @@
+name = "[HTP] Spellblade And Such | Spanish Translation Pack"
+filename = "HTP-Spellblade and such-TranslationPack-v1.0.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "e342acac3f02f7e8848c1e4ea3832f5edfee5b9c"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7194248
+project-id = 1380010

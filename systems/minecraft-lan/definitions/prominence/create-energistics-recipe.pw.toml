@@ -1,0 +1,13 @@
+name = "Create Energistics - A Recipe Datapack"
+filename = "create_applied_energistics_recipes_alts_1.20.1-1.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "933b0a7f6cdc29c47e90b7bd911ad29b1fba1263"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7221388
+project-id = 1384194

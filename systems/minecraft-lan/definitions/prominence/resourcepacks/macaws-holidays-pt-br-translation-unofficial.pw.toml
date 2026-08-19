@@ -1,0 +1,13 @@
+name = "Macaw's Holidays PT-BR Translation (Unofficial)"
+filename = "Mcwholidays-PT-BR-v1.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "0483e9af0911320d83a87005bc58616b42eee310"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7354584
+project-id = 1409044

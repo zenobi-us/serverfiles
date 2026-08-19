@@ -1,0 +1,13 @@
+name = "[HTP] Extended AE | Spanish Translation Pack"
+filename = "HTP-Extendedae-TranslationPack-v1.0.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "6ba22030873059a195507df3f903d079c78a0b9e"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 6934566
+project-id = 1335931

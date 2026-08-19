@@ -1,0 +1,13 @@
+name = "Ad Astra PT-BR Translation (Unofficial)"
+filename = "Ad_astra-PT-BR-v1.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "0a7fc7195edc7896aea588cd8928bffc138aa40a"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7194288
+project-id = 1380030

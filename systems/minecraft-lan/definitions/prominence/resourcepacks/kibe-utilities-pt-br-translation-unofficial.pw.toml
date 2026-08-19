@@ -1,0 +1,13 @@
+name = "Kibe Utilities PT-BR Translation (Unofficial)"
+filename = "Mcda-PT-BR-v1.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "c2c0a7001d8cf70b9ffac8a8bfa010ef02c86a8f"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7194483
+project-id = 1380117

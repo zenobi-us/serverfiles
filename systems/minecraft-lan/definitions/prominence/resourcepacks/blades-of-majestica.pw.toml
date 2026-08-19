@@ -1,0 +1,13 @@
+name = "Blades of Majestica"
+filename = "Blades Of Majestica Prominence.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "4dc16a96a10a643939a201343a26104ae3e86dc0"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 6231973
+project-id = 861104

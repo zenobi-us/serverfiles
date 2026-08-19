@@ -1,0 +1,13 @@
+name = "Spellblades n Such Unlimited - Temp fix for Prominence II"
+filename = "spellblades_unlimited_1.20.1-1.0.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "f789ca1efa5fba225cf6610aaac98516739d1095"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7364870
+project-id = 1411023

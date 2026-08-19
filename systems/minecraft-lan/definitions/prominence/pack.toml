@@ -1,0 +1,13 @@
+name = "Prominence II Hasturian Era"
+author = "ElocinDev"
+version = "v3.9.27"
+pack-format = "packwiz:1.1.0"
+
+[index]
+file = "index.toml"
+hash-format = "sha256"
+hash = "db183b35a84b81a823a442d9a9d17d9f596a07e00d2b1edd0cfb6779aad705f2"
+
+[versions]
+fabric = "0.18.4"
+minecraft = "1.20.1"

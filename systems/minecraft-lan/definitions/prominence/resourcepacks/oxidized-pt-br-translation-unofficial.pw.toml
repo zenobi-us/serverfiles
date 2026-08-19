@@ -1,0 +1,13 @@
+name = "Oxidized PT-BR Translation (Unofficial)"
+filename = "Oxidized-PT-BR-v1.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "ef373aee349a1c07cca6a26d508e58959f158fa3"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7194407
+project-id = 1380085

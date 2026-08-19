@@ -1,0 +1,13 @@
+name = "[HTP] Nether Depths Upgrade | Spanish Translation Pack"
+filename = "HTP-Nether depths upgrade-TranslationPack-v1.0.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "d0c56d0917f785315f1b81222c05de9b79f1274c"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7743255
+project-id = 1483510

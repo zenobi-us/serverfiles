@@ -1,0 +1,13 @@
+name = "[HTP] MC Dungeons Armors | Spanish Translation Pack"
+filename = "HTP-Mcda-TranslationPack-v1.0.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "0542823853432f99907c75f39ad2747b7ecdbad8"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 6934762
+project-id = 1335962

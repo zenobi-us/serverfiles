@@ -1,0 +1,13 @@
+name = "Ashen + Advanced Netherite Support"
+filename = "Ashen_Advanced_Netherite_Support_1.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "e2b21aa7f5dad3e2a1f0da59e597cf159aa83a53"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 5690846
+project-id = 1096459

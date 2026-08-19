@@ -1,0 +1,13 @@
+name = "Ashen 16x Mod Compatibility [DEPRECATED] "
+filename = "Ashen_Mod_Compatibility.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "5b45c12f5431a53938c94b57f8b00183ad0d66e6"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 5424221
+project-id = 1028450

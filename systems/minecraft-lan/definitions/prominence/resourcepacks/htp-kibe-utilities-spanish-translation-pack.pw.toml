@@ -1,0 +1,13 @@
+name = "[HTP] Kibe Utilities | Spanish Translation Pack"
+filename = "HTP-Kibe-TranslationPack-v1.0.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "1a9e1ff464eeaf32b1648114088719a92850ccc4"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 6963355
+project-id = 1341080

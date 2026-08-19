@@ -1,0 +1,13 @@
+name = "Artifacts PT-BR Translation (Unofficial)"
+filename = "Artifacts-PT-BR-v1.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "89c72e51bbac98a32d9016e28d482ddd31764179"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7194419
+project-id = 1380091

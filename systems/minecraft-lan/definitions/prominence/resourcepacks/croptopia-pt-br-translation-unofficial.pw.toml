@@ -1,0 +1,13 @@
+name = "Croptopia PT-BR Translation (Unofficial)"
+filename = "Croptopia-PT-BR-v1.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "57b250be9244f72d12538e796ff859f4bd87172b"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7194443
+project-id = 1380099

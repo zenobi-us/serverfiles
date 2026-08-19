@@ -1,0 +1,13 @@
+name = "[HTP] AdventureZ | Spanish Translation Pack"
+filename = "HTP-Adventurez-TranslationPack-v1.0.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "41f9db70374a8e4fd1b722d8860a2c79526fb136"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 6805056
+project-id = 1312900

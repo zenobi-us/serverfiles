@@ -1,0 +1,13 @@
+name = "VillagersPlus (FORGE) PT-BR Translation (Unofficial)"
+filename = "Villagersplus-PT-BR-v1.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "cc6a007e6ec20b2aabccee2a78424ae36df974d3"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7194453
+project-id = 1380104

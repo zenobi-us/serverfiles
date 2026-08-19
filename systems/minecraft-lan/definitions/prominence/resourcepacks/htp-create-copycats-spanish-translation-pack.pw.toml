@@ -1,0 +1,13 @@
+name = "[HTP] Create: Copycats+ | Spanish Translation Pack"
+filename = "HTP-Copycats-TranslationPack-v1.0.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "23f4bea2e2ed74c1f481d2ee1ea14d4e1b73e968"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 6835440
+project-id = 1318510

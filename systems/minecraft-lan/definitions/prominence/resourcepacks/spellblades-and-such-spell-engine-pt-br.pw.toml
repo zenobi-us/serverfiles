@@ -1,0 +1,13 @@
+name = "Spellblades and Such (Spell Engine) PT-BR Translation (Unofficial)"
+filename = "Spellbladenext-PT-BR-v1.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "eecf8fd63d1a8b095292cf6e1e83458c29d5fb26"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7194422
+project-id = 1380092

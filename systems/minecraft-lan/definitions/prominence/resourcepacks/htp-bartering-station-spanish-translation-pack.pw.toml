@@ -1,0 +1,13 @@
+name = "[HTP] Bartering Station | Spanish Translation Pack"
+filename = "HTP-Barteringstation-TranslationPack-v1.0.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "9941cddce107553b507226352bde6c787b80c41b"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 6805110
+project-id = 1312914

@@ -1,0 +1,13 @@
+name = "Nether Depths Upgrade PT-BR Translation (Unofficial)"
+filename = "Netherdepthsupgrade-PT-BR-v1.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "607385a2a68195733126a72d13570ea18bdd978b"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7194397
+project-id = 1380081

@@ -1,0 +1,13 @@
+name = "[HTP] Dark Utilities | Spanish Translation Pack"
+filename = "HTP-Darkutils-TranslationPack-v1.0.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "95a991460c41399028207f81983824adb6a9c78f"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 6835406
+project-id = 1318501

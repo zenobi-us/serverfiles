@@ -1,0 +1,13 @@
+name = "[HTP] Friends&Foes - Beekeeper Hut | Spanish Translation Pack"
+filename = "HTP-Friendsfoes - beekeeper hut-TranslationPack-v1.0.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "93566cffd872996711e28c3ea22254e19b40db55"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7743241
+project-id = 1483507

@@ -1,0 +1,13 @@
+name = "[HTP] Invocations | Spanish Translation Pack"
+filename = "HTP-Invoke-TranslationPack-vunknown.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "56f0fd0ce806720b9bec543db31336a9504f07de"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 5060594
+project-id = 966992

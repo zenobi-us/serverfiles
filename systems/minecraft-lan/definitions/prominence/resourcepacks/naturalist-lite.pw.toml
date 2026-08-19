@@ -1,0 +1,13 @@
+name = "Naturalist Lite PT-BR Translation (Unofficial)"
+filename = "Naturalist-PT-BR-v1.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "27a2afd4e94d7cbeb7d05981e8159ca22154aa4c"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7194490
+project-id = 1380120

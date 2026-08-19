@@ -1,0 +1,13 @@
+name = "Death Knights - Balancing Datapack for Prominence II"
+filename = "death_knights_spell_tweaks_1.20.1-1.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "749706b90770415a0aaf253b06e0fd0fed693409"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7130466
+project-id = 1369131

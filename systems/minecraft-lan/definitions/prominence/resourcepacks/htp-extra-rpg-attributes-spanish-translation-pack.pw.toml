@@ -1,0 +1,13 @@
+name = "[HTP] Extra RPG Attributes | Spanish Translation Pack"
+filename = "HTP-Extraspellattributes-TranslationPack-v1.0.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "24ced94b2bc59d4d7e202eccb1a3276f15aede92"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 6963338
+project-id = 1341076

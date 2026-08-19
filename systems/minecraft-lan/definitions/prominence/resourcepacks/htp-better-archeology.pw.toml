@@ -1,0 +1,13 @@
+name = "[HTP] Better Archeology | Spanish Translation Pack"
+filename = "HTP-Betterarcheology-TranslationPack-v1.0.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "732b226f0888c5a0f4ddc95d2248432796186a37"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 5059784
+project-id = 966855

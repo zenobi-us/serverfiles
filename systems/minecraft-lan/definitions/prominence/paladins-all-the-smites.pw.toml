@@ -1,0 +1,13 @@
+name = "Paladins - All the Smites"
+filename = "paladins_all_the_smites-1.20.1_1.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "aed80330d5c0a9cf4c8981f31fed6050807352b6"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7151904
+project-id = 1372717

@@ -1,0 +1,13 @@
+name = "[HTP] Croptopia | Spanish Translation Pack"
+filename = "HTP-Croptopia-TranslationPack-v1.0.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "685dff5f524aa64259a0d4ac314e7444847965b7"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 6932910
+project-id = 1335608

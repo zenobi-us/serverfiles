@@ -1,0 +1,13 @@
+name = "Hardening Catalyst Rebalance | Datapack"
+filename = "HardeningCatalystRebalance.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "de85186041bb8d4ca43c332b946c7759ec09eb1f"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 5038587
+project-id = 963067

@@ -1,0 +1,13 @@
+name = "[HTP] Macaw's Holidays | Spanish Translation Pack"
+filename = "HTP-Macaw's holidays-TranslationPack-v1.0.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "03fa39d81229057e742f35e76a0b4c04f56c3ed2"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7340486
+project-id = 1405842

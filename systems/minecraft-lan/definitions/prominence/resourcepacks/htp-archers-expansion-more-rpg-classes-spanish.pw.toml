@@ -1,0 +1,13 @@
+name = "[HTP] Archers Expansion (More RPG Classes) | Spanish Translation Pack"
+filename = "HTP-Archers_expansion-TranslationPack-v1.0.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "0400a26719a1f487e840ed35db7a55c86e4145fc"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 6934719
+project-id = 1335951

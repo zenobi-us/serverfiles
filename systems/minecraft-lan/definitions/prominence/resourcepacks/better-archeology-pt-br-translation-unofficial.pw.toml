@@ -1,0 +1,13 @@
+name = "Better Archeology PT-BR Translation (Unofficial)"
+filename = "Betterarcheology-PT-BR-v1.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "82ab3da70e528f3dec0f214403f1470608385a8b"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7194322
+project-id = 1380044

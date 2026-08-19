@@ -1,0 +1,13 @@
+name = "[HTP] Frostiful | Spanish Translation Pack"
+filename = "HTP-Frostiful-TranslationPack-v1.0.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "95b734012cdb0232d9db522880373f8db28cd5a3"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 6963345
+project-id = 1341077

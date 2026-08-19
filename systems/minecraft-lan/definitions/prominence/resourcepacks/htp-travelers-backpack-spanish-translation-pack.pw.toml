@@ -1,0 +1,13 @@
+name = "[HTP] Traveler's Backpack | Spanish Translation Pack"
+filename = "HTP-Travelersbackpack-TranslationPack-v1.0.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "2c68322e646541d9d3c838fd4f27d77783760429"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 6963314
+project-id = 1341068

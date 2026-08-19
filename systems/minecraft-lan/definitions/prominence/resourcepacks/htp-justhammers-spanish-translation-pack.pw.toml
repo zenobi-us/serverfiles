@@ -1,0 +1,13 @@
+name = "[HTP] JustHammers | Spanish Translation Pack"
+filename = "HTP-Justhammers-TranslationPack-v1.0.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "584065d0957eca4abbac06683231e1af90948764"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 6835432
+project-id = 1318508

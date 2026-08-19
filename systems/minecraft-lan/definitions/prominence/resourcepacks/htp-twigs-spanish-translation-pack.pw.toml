@@ -1,0 +1,13 @@
+name = "[HTP] Twigs | Spanish Translation Pack"
+filename = "HTP-Twigs-TranslationPack-v1.0.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "f91977d0545b85e9d2323624eea494ecd0ddd356"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 6932835
+project-id = 1335592

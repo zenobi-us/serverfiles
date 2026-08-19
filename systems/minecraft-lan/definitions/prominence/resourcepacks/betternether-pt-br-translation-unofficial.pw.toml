@@ -1,0 +1,13 @@
+name = "BetterNether PT-BR Translation (Unofficial)"
+filename = "Betternether-PT-BR-v1.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "9fc4be44d447235a66057213e1fc3199264f43a4"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7194335
+project-id = 1380047

@@ -1,0 +1,13 @@
+name = "Convenient Decor PT-BR Translation (Unofficial)"
+filename = "Convenientdecor-PT-BR-v1.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "634646ec66adaa4fd3d5ff16c97359c050acc862"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7194345
+project-id = 1380051

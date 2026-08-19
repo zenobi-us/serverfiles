@@ -1,0 +1,13 @@
+name = "Better Nether x Ashen Compatibility"
+filename = "betternether_x_ashen.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "d5b525a0758504f642258d69257e8cd3685768b2"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7741418
+project-id = 1483194

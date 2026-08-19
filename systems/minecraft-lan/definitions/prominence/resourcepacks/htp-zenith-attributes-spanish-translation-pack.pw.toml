@@ -1,0 +1,13 @@
+name = "[HTP] Zenith Attributes | Spanish Translation Pack"
+filename = "HTP-Zenith_attributes-TranslationPack-v1.0.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "047e11b86833fe7921a4986fb48a6b3c5bac9547"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7194236
+project-id = 1380005

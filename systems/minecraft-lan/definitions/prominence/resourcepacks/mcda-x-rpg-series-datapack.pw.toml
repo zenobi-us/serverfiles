@@ -1,0 +1,13 @@
+name = "MCDA x RPG Series"
+filename = "MCDA_x_RPG_Series.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "dbd0a7c13f9357dd704a27054eafbf7f877f7fb8"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 6361413
+project-id = 1230895

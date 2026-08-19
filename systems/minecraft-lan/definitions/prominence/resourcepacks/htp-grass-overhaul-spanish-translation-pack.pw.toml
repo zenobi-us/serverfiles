@@ -1,0 +1,13 @@
+name = "[HTP] Grass Overhaul | Spanish Translation Pack"
+filename = "HTP-Grassoverhaul-TranslationPack-v1.0.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "b073904b12d162a95d12a30b8a8c74ab2f2fbce1"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 6932821
+project-id = 1335587

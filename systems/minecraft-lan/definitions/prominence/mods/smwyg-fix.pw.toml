@@ -1,0 +1,13 @@
+name = "SMWYG-FIx"
+filename = "smwyg-fix-1.0.0.jar"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "1725fdf5f7568ffd4f9a7677432deec617d141cf"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7765545
+project-id = 1487617

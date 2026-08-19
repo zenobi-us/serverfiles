@@ -1,0 +1,13 @@
+name = "Archers Expansion - Balacing Datapack for Prominence II"
+filename = "archers_expansion_spell_tweaks_1.20.1_1.2.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "f96fd7627ef2236886bf5da61261abd9c3dde629"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7817715
+project-id = 1347777

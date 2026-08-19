@@ -1,0 +1,13 @@
+name = "[HTP] Farmer's Knives | Spanish Translation Pack"
+filename = "HTP-Farmersknives-TranslationPack-v1.0.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "e9e9320da6ff7a841063e9ddd8983103c22607f2"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 6963303
+project-id = 1341065

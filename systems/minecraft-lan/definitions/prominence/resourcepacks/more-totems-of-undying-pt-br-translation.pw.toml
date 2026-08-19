@@ -1,0 +1,13 @@
+name = "More Totems Of Undying PT-BR Translation (Unofficial)"
+filename = "Moretotems-PT-BR-v1.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "29ef260609e3e183ba8b479420d559f4f9d934a1"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7194383
+project-id = 1380076

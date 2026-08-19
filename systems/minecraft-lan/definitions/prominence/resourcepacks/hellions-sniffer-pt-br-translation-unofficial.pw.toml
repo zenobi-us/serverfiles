@@ -1,0 +1,13 @@
+name = "Hellion's Sniffer+ PT-BR Translation (Unofficial)"
+filename = "Snifferplus-PT-BR-v1.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "58e0a5ac83ce15b2251a822b99775c16f7024b6b"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7194417
+project-id = 1380090

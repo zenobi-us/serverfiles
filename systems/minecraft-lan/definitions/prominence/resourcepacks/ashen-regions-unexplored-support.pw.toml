@@ -1,0 +1,13 @@
+name = "Ashen + Regions Unexplored Support"
+filename = "Ashen_Regions_Unexplored_Support_1.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "7e6d7165bad374ca57e46569b532bb920321991b"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 5690860
+project-id = 1096464

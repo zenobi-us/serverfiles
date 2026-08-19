@@ -1,0 +1,13 @@
+name = "MEGA Cells PT-BR Translation (Unofficial)"
+filename = "Megacells-PT-BR-v1.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "1b13fb66efebeb6801100248772a9956231170ad"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7194380
+project-id = 1380075

@@ -1,0 +1,13 @@
+name = "[HTP] MEGA Cells | Spanish Translation Pack"
+filename = "HTP-Megacells-TranslationPack-v1.0.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "76d3661ea66308fa74c3d1cdb9f4bb56705fbcfb"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 6932683
+project-id = 1335571

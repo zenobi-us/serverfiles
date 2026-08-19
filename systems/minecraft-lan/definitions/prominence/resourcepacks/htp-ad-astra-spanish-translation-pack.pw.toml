@@ -1,0 +1,13 @@
+name = "[HTP] Ad Astra | Spanish Translation Pack"
+filename = "HTP-Ad_astra-TranslationPack-v1.0.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "a45666ace7fb0adb359d137fdd0fdc3922882ca5"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 6805044
+project-id = 1312891

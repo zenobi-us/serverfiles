@@ -1,0 +1,13 @@
+name = "Expanded Delight PT-BR Translation (Unofficial)"
+filename = "Expandeddelight-PT-BR-v1.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "d0769c78532402671c26e17c50cf3d5d9387f7fb"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7194366
+project-id = 1380064

@@ -1,0 +1,13 @@
+name = "[HTP] Mobs of Mythology | Spanish Translation Pack"
+filename = "HTP-Mobs_of_mythology-TranslationPack-v1.0.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "b84202e9daef46148b2a69770fa3b89cf6b3a88c"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 6835366
+project-id = 1318495

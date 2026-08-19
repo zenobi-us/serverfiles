@@ -1,0 +1,13 @@
+name = "[HTP] Things | Spanish Translation Pack"
+filename = "HTP-Things-TranslationPack-v1.0.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "6ba5d9af57f8771d53c099daea44f2e617086985"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 6932877
+project-id = 1335602

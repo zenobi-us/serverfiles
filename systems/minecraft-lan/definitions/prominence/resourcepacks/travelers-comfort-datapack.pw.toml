@@ -1,0 +1,13 @@
+name = "Traveler's Comfort | Datapack"
+filename = "TravelersComfortCompat.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "91f9ecdde42ca13a503ed63b5050a9d95404e7d6"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 5038533
+project-id = 963055

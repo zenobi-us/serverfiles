@@ -1,0 +1,13 @@
+name = "Ashen Custom Mobs"
+filename = "Ashen_Custom_Mobs.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "eddfe6d9417a312fb86c4081c184a8b378b04957"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 5529826
+project-id = 1028439

@@ -1,0 +1,13 @@
+name = "Bosses of Mass Destruction PT-BR Translation (Unofficial)"
+filename = "Bosses_of_mass_destruction-PT-BR-v1.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "be72308e60dad2466506546b578fbf14469ab17f"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7194434
+project-id = 1380095

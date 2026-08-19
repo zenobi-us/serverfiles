@@ -1,0 +1,13 @@
+name = "[HTP] Icarus | Spanish Translation Pack"
+filename = "HTP-Icarus-TranslationPack-v1.0.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "06ea553875e038b57e8a987efa172e4fc4cf70b7"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 6932870
+project-id = 1335601

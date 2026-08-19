@@ -1,0 +1,13 @@
+name = "End Food for Everyone"
+filename = "end_food_for_everyone-1.20.1_1.0.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "7938a00cc2542789a25fe72acee96ef4f9bccf5f"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7312177
+project-id = 1401218

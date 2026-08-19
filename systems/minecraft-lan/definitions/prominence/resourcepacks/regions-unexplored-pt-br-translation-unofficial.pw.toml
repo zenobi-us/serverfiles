@@ -1,0 +1,13 @@
+name = "Regions Unexplored PT-BR Translation (Unofficial)"
+filename = "Regions_unexplored-PT-BR-v1.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "46dfb8c81e62ab3054a1dd1f5218b2433f6554ac"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7194505
+project-id = 1380127

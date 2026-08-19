@@ -1,0 +1,13 @@
+name = "Decorative Blocks PT-BR Translation (Unofficial)"
+filename = "Decorative_blocks-PT-BR-v1.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "5b6bd8d4620fc10d078d6e6fd1482528bcc93b53"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7194449
+project-id = 1380101

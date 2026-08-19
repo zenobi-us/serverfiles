@@ -1,0 +1,13 @@
+name = "[HTP] Winterly | Spanish Translation Pack"
+filename = "HTP-Winterly-TranslationPack-v1.0.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "a518efb927798340c753aac4292e627697850793"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 6934786
+project-id = 1335972

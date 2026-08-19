@@ -1,0 +1,13 @@
+name = "Promenade PT-BR Translation (Unofficial)"
+filename = "Promenade-PT-BR-v1.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "f4c07bec6599bae91d6251b60f27a9ad3ff5ca5e"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7194413
+project-id = 1380087

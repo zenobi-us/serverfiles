@@ -1,0 +1,13 @@
+name = "Ashen + Prominence Original Soundtrack Support"
+filename = "Ashen_Prominence_OST_Support.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "e9fff4edf6e2278990dac5f1a6ac893bb86b0ae6"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 5793482
+project-id = 1117593

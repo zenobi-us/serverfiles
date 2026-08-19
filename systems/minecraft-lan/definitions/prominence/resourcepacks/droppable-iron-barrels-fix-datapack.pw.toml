@@ -1,0 +1,13 @@
+name = "Droppable Iron Barrels Fix"
+filename = "Droppable_Iron_Barrels_Fix.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "e14d5b4ca05043a557b47c33e255a5336d94db4e"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 6361438
+project-id = 1230904

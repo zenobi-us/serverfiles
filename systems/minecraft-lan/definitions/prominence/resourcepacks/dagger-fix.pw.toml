@@ -1,0 +1,13 @@
+name = "Dagger Fix"
+filename = "Daggers_Fix.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "61ea3f0d305c020eae29c7d41a3afadcc7ae474c"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 6475338
+project-id = 1254408

@@ -1,0 +1,13 @@
+name = "BetterEnd PT-BR Translation (Unofficial)"
+filename = "Betterend-PT-BR-v1.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "42df09ddac115a7403f140c4f901179f73fffcd3"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7194330
+project-id = 1380045

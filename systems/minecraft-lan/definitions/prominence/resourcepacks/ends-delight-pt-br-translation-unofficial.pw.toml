@@ -1,0 +1,13 @@
+name = "End's Delight PT-BR Translation (Unofficial)"
+filename = "Ends_delight-PT-BR-v1.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "dafb0149fc40df0b6dd53063db371660d5245a53"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7194365
+project-id = 1380062

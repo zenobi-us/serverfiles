@@ -1,0 +1,13 @@
+name = "Create Crafts & Additions PT-BR Translation (Unofficial)"
+filename = "Createaddition-PT-BR-v1.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "b4de8097cf159dcb3ae3ae1b6738f85c4c9175bf"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7194438
+project-id = 1380097

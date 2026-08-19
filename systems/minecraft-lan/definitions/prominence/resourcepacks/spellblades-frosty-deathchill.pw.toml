@@ -1,0 +1,13 @@
+name = "Spellblades' Frosty Deathchill"
+filename = "Frosty-Deathchill.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "63393f8bb5148b99a03099ca5c636e20f090a74d"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 5038452
+project-id = 963042

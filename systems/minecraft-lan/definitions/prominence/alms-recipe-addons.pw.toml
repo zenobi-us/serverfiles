@@ -1,0 +1,13 @@
+name = "Alm's Crafts and Additions"
+filename = "alms_recipe_additions-1.20.1_1.6.6.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "5a60e7786ff830bd35fe99375b45809382dcbcd6"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 8002547
+project-id = 1398050

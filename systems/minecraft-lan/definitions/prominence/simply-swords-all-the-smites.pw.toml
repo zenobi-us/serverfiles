@@ -1,0 +1,13 @@
+name = "Simply Swords - All the Smites"
+filename = "simplyswords_all_the_smites-1.20.1_1.0.1.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "93d171a72fdfc3a14c9fdb19344f790e6c0b26cd"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7341886
+project-id = 1372743

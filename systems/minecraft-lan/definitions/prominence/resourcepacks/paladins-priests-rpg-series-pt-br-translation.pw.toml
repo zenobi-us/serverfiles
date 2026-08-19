@@ -1,0 +1,13 @@
+name = "Paladins & Priests (RPG Series) PT-BR Translation (Unofficial)"
+filename = "Paladins-PT-BR-v1.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "5e3918b7467ecfe8448ec7033b42df9bf8d6c682"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7194500
+project-id = 1380124

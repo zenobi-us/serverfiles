@@ -1,0 +1,13 @@
+name = "Handcrafted PT-BR Translation (Unofficial)"
+filename = "Handcrafted-PT-BR-v1.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "25c79600cf7d58900b900ac145fc6118f748acff"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7194375
+project-id = 1380072

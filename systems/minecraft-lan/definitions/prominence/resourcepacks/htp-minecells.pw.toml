@@ -1,0 +1,13 @@
+name = "[HTP] Minecells | Spanish Translation Pack"
+filename = "HTP-Minecells-TranslationPack-v1.0.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "7c4cfbc66c14f4b46446bb11383f2378532b1ebd"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 5059712
+project-id = 966846

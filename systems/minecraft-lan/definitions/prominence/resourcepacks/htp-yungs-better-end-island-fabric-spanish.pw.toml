@@ -1,0 +1,13 @@
+name = "[HTP] YUNG's Better End Island (Fabric) | Spanish Translation Pack"
+filename = "HTP-Betterendisland-TranslationPack-v1.0.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "fbeaaf317afcb899eb3150539789ab77279ee322"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 6934773
+project-id = 1335966

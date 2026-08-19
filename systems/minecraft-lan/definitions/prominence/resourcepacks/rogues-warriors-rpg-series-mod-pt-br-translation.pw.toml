@@ -1,0 +1,13 @@
+name = "Rogues & Warriors (RPG Series) PT-BR Translation (Unofficial)"
+filename = "Rogues-PT-BR-v1.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "740065de473cb0bddda32b89cdc57b5581278611"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7194515
+project-id = 1380128

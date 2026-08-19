@@ -1,0 +1,13 @@
+name = "Gamer Axe Rebalance | Datapack"
+filename = "GamerAxeRebalance.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "e7d2fda62246ab4f3734322cda77334a669130c6"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 5038564
+project-id = 963063

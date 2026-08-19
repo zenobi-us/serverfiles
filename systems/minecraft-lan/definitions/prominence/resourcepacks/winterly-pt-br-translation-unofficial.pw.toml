@@ -1,0 +1,13 @@
+name = "Winterly PT-BR Translation (Unofficial)"
+filename = "Winterly-PT-BR-v1.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "5db9fa9da487a86c840270c63e20dbccac27b5b6"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7194540
+project-id = 1380134

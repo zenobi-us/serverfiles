@@ -1,0 +1,13 @@
+name = "Create: Estrogen PT-BR Translation (Unofficial)"
+filename = "Estrogen-PT-BR-v1.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "4f104d95dff3c38310e475d6a872b8dbef8c0e19"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7194456
+project-id = 1380106

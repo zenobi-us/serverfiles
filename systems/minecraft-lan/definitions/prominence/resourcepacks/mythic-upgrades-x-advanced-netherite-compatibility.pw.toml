@@ -1,0 +1,13 @@
+name = "Mythic Upgrades x Advanced Netherite"
+filename = "MythicUpgrades_x_Advanced_Netherite.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "c9a24cd9af0b91537fa996a230525f342bfb7ec7"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 6361426
+project-id = 1230898

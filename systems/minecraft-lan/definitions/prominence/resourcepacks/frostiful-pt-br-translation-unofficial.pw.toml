@@ -1,0 +1,13 @@
+name = "Frostiful PT-BR Translation (Unofficial)"
+filename = "Frostiful-PT-BR-v1.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "1cf1b4f18d276c4050af279d68c1ae1ca2d8aac1"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7194466
+project-id = 1380107

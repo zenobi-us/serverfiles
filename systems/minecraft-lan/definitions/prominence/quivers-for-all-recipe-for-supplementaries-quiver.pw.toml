@@ -1,0 +1,13 @@
+name = "Quivers for all - Recipe for Supplementaries Quiver"
+filename = "quiver_recipe_supplementaries-1.20.1_1.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "60b124218f68fa3c1c90dfc5d48f3fea6485e92b"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7214755
+project-id = 1383512

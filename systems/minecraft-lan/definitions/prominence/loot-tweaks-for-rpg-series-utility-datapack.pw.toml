@@ -1,0 +1,13 @@
+name = "Loot Tweaks For RPG Series - Utility Datapack for Prominence II"
+filename = "rpg_series_loot_table_tweaks_1.20.1_1.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "5870f8e8fd26248e81ea7bb7fcb5c7cffd3606ed"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7163882
+project-id = 1370472

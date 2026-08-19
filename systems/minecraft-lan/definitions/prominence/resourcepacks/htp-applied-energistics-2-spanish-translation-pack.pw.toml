@@ -1,0 +1,13 @@
+name = "[HTP] Applied energistics 2 | Spanish Translation Pack"
+filename = "HTP-Applied energistics 2-TranslationPack-v1.0.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "cabb8a001066dfd968afb7b52fa387c1a25e696e"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7743224
+project-id = 1483503

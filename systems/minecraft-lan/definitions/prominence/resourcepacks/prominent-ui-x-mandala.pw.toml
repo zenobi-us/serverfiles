@@ -1,0 +1,13 @@
+name = "Prominent UI x Mandala's GUI"
+filename = "Mandala_x_Prominent_UI.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "278a5d380029638a8a191cce19b6023a484d8f11"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 5038504
+project-id = 963049

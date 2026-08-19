@@ -1,0 +1,13 @@
+name = "[HTP] Trading Post | Spanish Translation Pack"
+filename = "HTP-Tradingpost-TranslationPack-v1.0.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "1d571c4def92b92e1224e47ec78ea2c11f1b1c71"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 6932863
+project-id = 1335600

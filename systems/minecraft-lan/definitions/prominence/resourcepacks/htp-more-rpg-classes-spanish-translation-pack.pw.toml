@@ -1,0 +1,13 @@
+name = "[HTP] More RPG classes | Spanish Translation Pack"
+filename = "HTP-More_rpg_classes-TranslationPack-v1.0.0.zip"
+side = "client"
+
+[download]
+hash-format = "sha1"
+hash = "91469667d79953aa295feef729fa169e89bdc856"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 7194241
+project-id = 1380007

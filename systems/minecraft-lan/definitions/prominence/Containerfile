@@ -1,0 +1,8 @@
+FROM docker.io/itzg/minecraft-server:java17
+
+COPY --chown=1000:1000 . /pack/
+
+ENV PACKWIZ_URL=file:///pack/pack.toml \
+    COPY_CONFIG_SRC=/pack/config \
+    COPY_MODS_SRC=/pack/assets/mods \
+    MODS=/pack/assets/mods
