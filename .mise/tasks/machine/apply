@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+#MISE description="Apply a machine tree on the current host"
+#USAGE flag "--machine <machine>" help="Machine tree slug" required=true
+set -euo pipefail
+
+machine=${usage_machine:?}
+[[ $machine =~ ^[a-z0-9][a-z0-9-]*$ ]] || {
+	echo "Invalid machine tree slug: $machine" >&2
+	exit 1
+}
+root=$(git rev-parse --show-toplevel)
+tmp=$(mktemp -d)
+trap 'rm -rf "$tmp"' EXIT
+
+"$root/bin/render" "$machine" "$tmp/release" >/dev/null
+
+if ((EUID == 0)); then
+	"$root/bin/build-images" "$machine"
+	"$root/bin/reconcile" "$tmp/release"
+else
+	sudo "$root/bin/build-images" "$machine"
+	sudo "$root/bin/reconcile" "$tmp/release"
+fi

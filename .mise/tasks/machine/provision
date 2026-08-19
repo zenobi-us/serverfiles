@@ -1,36 +1,76 @@
 #!/usr/bin/env bash
-#MISE description="Provision a machine from origin/main"
-#USAGE arg "<machine>" help="Machine name"
+#MISE description="Install pull-based reconciliation on a machine"
+#USAGE arg "<machine>" help="Machine tree slug"
 set -euo pipefail
 
 machine=${usage_machine:?}
+[[ $machine =~ ^[a-z0-9][a-z0-9-]*$ ]] || {
+	echo "Invalid machine tree slug: $machine" >&2
+	exit 1
+}
 root=$(git rev-parse --show-toplevel)
 cd "$root"
 
-git fetch origin main
-
-tmp=$(mktemp -d)
-trap 'rm -rf "$tmp"' EXIT
-
-git archive origin/main | tar -x -C "$tmp"
-[[ -f $tmp/systems/$machine/machine.toml ]] || {
-	echo "Unknown machine in origin/main: $machine" >&2
+[[ -f systems/$machine/machine.toml ]] || {
+	echo "Unknown machine: $machine" >&2
 	exit 1
 }
 
-host=$(awk -F ' *= *' '$1 == "host" { gsub(/["[:space:]]/, "", $2); print $2 }' "$tmp/systems/$machine/machine.toml")
-user=$(awk -F ' *= *' '$1 == "user" { gsub(/["[:space:]]/, "", $2); print $2 }' "$tmp/systems/$machine/machine.toml")
+host=$(awk -F ' *= *' '$1 == "host" { gsub(/["[:space:]]/, "", $2); print $2 }' "systems/$machine/machine.toml")
+user=$(awk -F ' *= *' '$1 == "user" { gsub(/["[:space:]]/, "", $2); print $2 }' "systems/$machine/machine.toml")
+repo=$(git remote get-url origin)
+case $repo in
+git@github.com:*) repo="https://github.com/${repo#git@github.com:}" ;;
+https://github.com/*) ;;
+*)
+	echo "origin must be a GitHub repository" >&2
+	exit 1
+	;;
+esac
+repo=${repo%.git}.git
+
 [[ -n $host && -n $user ]] || {
 	echo "machine.toml must define host and user" >&2
 	exit 1
 }
 
-"$tmp/bin/render" "$machine" "$tmp/release" >/dev/null
-remote_tmp="/tmp/serverfiles-${machine}-$$"
+remote_tmp="/tmp/serverfiles-bootstrap-$$"
+# The remote path is generated locally.
+# shellcheck disable=SC2029
+ssh "$user@$host" "mkdir -p '$remote_tmp'"
+scp systemd/serverfiles-apply@.{service,timer} "$user@$host:$remote_tmp/"
 
-# The remote path is generated locally and contains no user input.
+# The machine slug, repository URL, and remote path come from validated local state.
 # shellcheck disable=SC2029
-tar -C "$tmp/release" -cf - . | ssh "$user@$host" "rm -rf '$remote_tmp' && mkdir -p '$remote_tmp' && tar -xf - -C '$remote_tmp'"
-scp "$tmp/bin/reconcile" "$user@$host:$remote_tmp/reconcile"
-# shellcheck disable=SC2029
-ssh -t "$user@$host" "sudo bash '$remote_tmp/reconcile' '$remote_tmp'; status=\$?; rm -rf '$remote_tmp'; exit \$status"
+ssh -t "$user@$host" "sudo bash -s -- '$machine' '$repo' '$remote_tmp'" <<'REMOTE'
+set -euo pipefail
+machine=$1
+repo=$2
+remote_tmp=$3
+
+command -v git >/dev/null
+command -v curl >/dev/null
+
+if [[ ! -x /usr/local/bin/mise ]]; then
+	curl --proto '=https' --tlsv1.2 -sSf https://mise.run | MISE_INSTALL_PATH=/usr/local/bin/mise sh
+fi
+
+install -d -m 0755 /var/lib/serverfiles
+if [[ -d /var/lib/serverfiles/repo/.git ]]; then
+	git -C /var/lib/serverfiles/repo remote set-url origin "$repo"
+else
+	rm -rf /var/lib/serverfiles/repo
+	git clone "$repo" /var/lib/serverfiles/repo
+fi
+
+git -C /var/lib/serverfiles/repo fetch origin main
+git -C /var/lib/serverfiles/repo checkout -B main origin/main
+
+install -m 0644 "$remote_tmp/serverfiles-apply@.service" /etc/systemd/system/
+install -m 0644 "$remote_tmp/serverfiles-apply@.timer" /etc/systemd/system/
+rm -rf "$remote_tmp"
+
+systemctl daemon-reload
+systemctl enable --now "serverfiles-apply@$machine.timer"
+systemctl start "serverfiles-apply@$machine.service"
+REMOTE

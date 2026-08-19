@@ -1,0 +1,13 @@
+[Unit]
+Description=Apply serverfiles state for %i
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/var/lib/serverfiles/repo
+ExecStart=/usr/bin/git fetch origin main
+ExecStart=/usr/bin/git reset --hard origin/main
+ExecStart=/usr/local/bin/mise trust --yes /var/lib/serverfiles/repo/.mise/config.toml
+ExecStart=/usr/local/bin/mise install
+ExecStart=/usr/local/bin/mise run machine:apply --machine %i
