@@ -1,3 +1,9 @@
 .mise.local.toml
 .rendered/
 .local/
+
+# FACTORY:HARNES:BEGIN
+# Local harness symlinks from `factory emit` — not repo content
+.claude/commands/factory-*.md
+.cursor/commands/factory-*.md
+# FACTORY:HARNES:END
