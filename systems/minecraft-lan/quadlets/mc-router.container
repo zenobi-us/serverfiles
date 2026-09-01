@@ -1,0 +1,19 @@
+[Unit]
+Description=Minecraft hostname router
+After=network-online.target prominence.service
+Wants=network-online.target
+
+[Container]
+Image=docker.io/itzg/mc-router:1.46.3
+ContainerName=mc-router
+Network=shared.network
+PublishPort=25565:25565
+Volume=/run/podman/podman.sock:/var/run/docker.sock:ro
+Environment=IN_DOCKER=true
+User=0
+
+[Service]
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
