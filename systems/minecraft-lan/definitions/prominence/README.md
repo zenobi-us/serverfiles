@@ -15,5 +15,5 @@ startup.
 - `offlinelan-1.1.1.jar`
 
 These exceptions remain in Git until a stable hosted source replaces them.
-The world does not belong here. It stays in `/var/lib/minecraft/prominence/world`
+The world does not belong here. It stays in `/var/lib/minecraft/prominence/data`
 on `minecraft.lan`.
