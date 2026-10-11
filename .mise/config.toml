@@ -1,4 +1,8 @@
 min_version = "2026.8.0"
+monorepo_root = true
+
+[monorepo]
+config_roots = ["./systems/*/definitions/*"]
 
 [tools]
 shellcheck = "0.11.0"

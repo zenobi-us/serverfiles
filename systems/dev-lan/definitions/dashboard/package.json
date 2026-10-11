@@ -1,0 +1,32 @@
+{
+  "name": "lan-service-directory",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "build": "vite build",
+    "preview": "vite preview --host 0.0.0.0",
+    "doctor": "npx react-doctor@latest"
+  },
+  "dependencies": {
+    "@fontsource/jetbrains-mono": "^5.3.0",
+    "@tanstack/react-router": "latest",
+    "@tanstack/react-start": "latest",
+    "lucide-react": "^0.468.0",
+    "react": "latest",
+    "react-dom": "latest"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.3.3",
+    "@tanstack/router-plugin": "latest",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "latest",
+    "nitro": "latest",
+    "react-doctor": "^0.9.17",
+    "tailwindcss": "^4.3.3",
+    "typescript": "latest",
+    "vite": "latest"
+  }
+}
