@@ -43,3 +43,20 @@ target builds changed definitions before it applies Quadlet state.
 
 `container:run` builds a definition and starts it locally with the environment,
 ports, and volumes from its matching Quadlet.
+
+## Publishing a project on dev.lan
+
+`systems/dev-lan` runs Caddy Docker Proxy on the `shared` Podman network. Add
+each project as a Quadlet in that machine tree and attach it to `shared.network`.
+Add labels like these to its `[Container]` section:
+
+```ini
+Network=shared.network
+Label=caddy=project.dev.lan
+Label=caddy.reverse_proxy={{upstreams 8080}}
+Label=caddy.tls=internal
+```
+
+Point wildcard DNS for `*.dev.lan` at the machine's LAN address. Caddy uses its
+internal CA for these routes, so clients must trust that CA. Only deploy trusted
+projects on this machine: Caddy can access the rootful Podman API socket.
