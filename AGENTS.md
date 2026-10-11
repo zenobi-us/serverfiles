@@ -16,3 +16,17 @@ Use mise when running mcporter.
 when connecting to coreos servers, use ssh.
 
 - Prefer the Proxmox mcporter for Proxmox operations. If it does not expose a required operation, use the Proxmox API or host CLI (`qm`, `pvesh`) as needed.
+
+## Agent skills
+
+### Issue tracker
+
+Tickets and initiatives use the local Markdown stores. See `docs/agents/issue-tracker.md` relative to the active Matt Pocock alignment root.
+
+### Triage labels
+
+Use the default triage label strings. See `docs/agents/triage-labels.md` relative to the active Matt Pocock alignment root.
+
+### Domain docs
+
+Single-context project. See `docs/agents/domain.md` relative to the active Matt Pocock alignment root.
