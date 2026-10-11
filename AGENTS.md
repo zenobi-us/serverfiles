@@ -17,6 +17,13 @@ when connecting to coreos servers, use ssh.
 
 - Prefer the Proxmox mcporter for Proxmox operations. If it does not expose a required operation, use the Proxmox API or host CLI (`qm`, `pvesh`) as needed.
 
+## Architecture
+
+- ./docs/explanation/
+- ./docs/how-to/add-a-machine.md
+- ./docs/how-to/manage-local-images.md
+- ./docs/how-to/provision-a-machine.md
+
 ## Agent skills
 
 ### Issue tracker
