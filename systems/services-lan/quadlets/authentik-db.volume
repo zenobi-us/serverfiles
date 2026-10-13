@@ -1,0 +1,8 @@
+[Unit]
+Description=Persistent Authentik PostgreSQL data
+
+[Volume]
+VolumeName=authentik-db
+
+[Install]
+WantedBy=multi-user.target

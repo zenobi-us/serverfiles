@@ -1,6 +1,9 @@
 .mise.local.toml
 .rendered/
 .local/
+fnox.local.toml
+.fnox.local.toml
+.env
 
 # FACTORY:HARNES:BEGIN
 # Local harness symlinks from `factory emit` — not repo content

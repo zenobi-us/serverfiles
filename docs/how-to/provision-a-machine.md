@@ -13,6 +13,43 @@ The target machine must provide:
 
 The repository must be public. Your required state must exist on `origin/main`.
 
+## Prepare secrets before applying a machine
+
+The committed [`fnox.toml`](../../fnox.toml) configures age encryption and public recipients. Secret values added with fnox are encrypted before they are written to this file. fnox and age are workstation-only tools: do not add them to the project-wide tool list because machine apply also runs mise on the target.
+
+Install the pinned tools and create a private age identity on your workstation:
+
+```bash
+mise install fnox@1.39.0 age@1.3.2
+mkdir -p ~/.config/fnox
+if [ ! -f ~/.config/fnox/age.txt ]; then
+  mise exec age@1.3.2 -- age-keygen -o ~/.config/fnox/age.txt
+fi
+mise exec age@1.3.2 -- age-keygen -y ~/.config/fnox/age.txt
+```
+
+The current public recipient is already listed in `fnox.toml`; verify that it matches the output. Keep `~/.config/fnox/age.txt` private and back it up outside the repository. Never commit the private identity. Each authorized operator needs an age identity; add their public recipient and run `mise exec fnox@1.39.0 -- fnox reencrypt` after changing recipients so they can decrypt existing secrets.
+
+Store a secret with a hidden prompt:
+
+```bash
+mise exec fnox@1.39.0 -- fnox set AUTHENTIK_PG_PASSWORD
+```
+
+This writes encrypted ciphertext to `fnox.toml`. Do not use `fnox export` to create a committed environment file; exported values are plaintext.
+
+The target does not need fnox. Before `machine:provision` or any apply that starts a secret-consuming unit, provision each rootful Podman secret over SSH from your workstation:
+
+```bash
+mise exec fnox@1.39.0 -- fnox exec -- sh -c 'printf %s "$AUTHENTIK_PG_PASSWORD"' |
+  ssh core@<configured-host> \
+    'sudo podman secret create --replace authentik-pg-password -'
+```
+
+Repeat for each secret, using the corresponding fnox name and Podman secret name. The secret value travels over SSH stdin, not as a command-line argument or temporary file. The target requires passwordless `sudo`, as listed above. Add each Podman secret name to only the Quadlets that need it. Recreate those containers after replacing a Podman secret; existing containers do not receive the replacement automatically.
+
+For fnox provider setup and security behavior, see the [fnox age guide](https://fnox.jdx.dev/providers/age) and [Podman secret documentation](https://docs.podman.io/en/v5.8.0/markdown/podman-secret-create.1.html).
+
 ## Provision the machine
 
 Commit and push the required state. Then use the machine tree name:

@@ -5,6 +5,9 @@ monorepo_root = true
 config_roots = ["./systems/*/definitions/*"]
 
 [tools]
+age = "1.3.2"
+fnox = { version = "1.39.0", workflow = "release.yml" }
+"github:airtonix/age-plugin-yubikey" = "0.5.2"
 shellcheck = "0.11.0"
 shfmt = "3.12.0"
 usage = "3.5.4"

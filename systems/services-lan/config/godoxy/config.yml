@@ -1,0 +1,13 @@
+autocert:
+  provider: local
+  cert_path: /app/certs/cert.crt
+  key_path: /app/certs/priv.key
+
+providers:
+  include:
+    - services.yml
+
+webui:
+  display_name: Services LAN
+  aliases:
+    - godoxy.services.lan

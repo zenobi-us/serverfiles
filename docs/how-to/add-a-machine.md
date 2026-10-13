@@ -27,6 +27,8 @@ List each generated systemd service in `units`:
 valheim.service
 ```
 
+For the Authentik deployment on `services-lan`, see [Deploy Authentik](deploy-authentik.md).
+
 Run the repository check:
 
 ```bash

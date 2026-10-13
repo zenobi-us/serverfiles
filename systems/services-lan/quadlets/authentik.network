@@ -1,0 +1,8 @@
+[Unit]
+Description=Private Authentik container network
+
+[Network]
+NetworkName=authentik
+
+[Install]
+WantedBy=multi-user.target

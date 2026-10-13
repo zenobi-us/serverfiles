@@ -1,0 +1,27 @@
+[Unit]
+Description=Authentik PostgreSQL
+Requires=authentik-network.service authentik-db-volume.service
+After=authentik-network.service authentik-db-volume.service
+
+[Container]
+Image=docker.io/library/postgres:16-alpine@sha256:721873c34ceb9f8d8fc265984940dc982404c105f19ad51be9fdc5970a6080ea
+ContainerName=authentik-postgresql
+Network=authentik.network
+NetworkAlias=postgresql
+Volume=authentik-db.volume:/var/lib/postgresql/data
+Environment=POSTGRES_DB=authentik
+Environment=POSTGRES_USER=authentik
+Environment=POSTGRES_PASSWORD_FILE=/run/secrets/authentik-pg-password
+Secret=authentik-pg-password
+HealthCmd=pg_isready -U authentik -d authentik
+HealthInterval=10s
+HealthRetries=6
+HealthTimeout=5s
+HealthStartPeriod=30s
+Notify=healthy
+
+[Service]
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

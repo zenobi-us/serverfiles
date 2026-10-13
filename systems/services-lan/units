@@ -1,0 +1,6 @@
+authentik-network.service
+authentik-db-volume.service
+authentik-postgresql.service
+authentik-server.service
+authentik-worker.service
+godoxy.service
