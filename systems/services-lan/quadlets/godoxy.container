@@ -1,5 +1,6 @@
 [Unit]
 Description=GoDoxy reverse proxy and WebUI
+ConditionPathExists=/var/lib/godoxy/enabled
 Requires=authentik-server.service
 After=authentik-server.service
 After=network-online.target
