@@ -1,8 +1,8 @@
 # Deploy Authentik on services-lan
 
-`systems/services-lan/` runs Authentik, PostgreSQL, and GoDoxy as rootful Podman Quadlets on the `services.lan` Fedora CoreOS host. Authentik publishes HTTP on loopback port 9000 for GoDoxy; PostgreSQL has no published port. Database and Authentik data persist in Podman storage and `/var/lib/authentik/data`.
+`systems/services-lan/` runs Authentik, PostgreSQL, and GoDoxy as rootful Podman Quadlets on the `services.lan` Fedora CoreOS host. Authentik publishes HTTP on loopback port 9000 for GoDoxy; PostgreSQL has no published port. Database and Authentik data persist in rootful Podman named volumes.
 
-The Authentik and PostgreSQL image references are pinned by version and registry digest. Update both deliberately. Back up PostgreSQL and `/var/lib/authentik/data` before an Authentik upgrade. Do not rely on rolling back only the image after a database migration.
+The Authentik and PostgreSQL image references are pinned by version and registry digest. Update both deliberately. Back up the `authentik-db` and `authentik-data` Podman volumes before an Authentik upgrade. Do not rely on rolling back only the image after a database migration.
 
 ## Before applying
 
@@ -11,7 +11,7 @@ The Authentik and PostgreSQL image references are pinned by version and registry
 3. The Authentik Quadlet binds port 9000 to loopback only. GoDoxy reaches it locally; do not add a public port-forward for 9000.
 4. The GoDoxy unit is gated by `/var/lib/godoxy/enabled`. Configure internal DNS for `authentik.services.lan` and `godoxy.services.lan`, then install a trusted certificate whose SANs cover both names and its private key at `/var/lib/godoxy/certs/cert.crt` and `/var/lib/godoxy/certs/priv.key` before creating that marker. The OIDC issuer and callback require HTTPS.
 5. Restrict inbound TCP ports 80 and 443 to intended client networks in the host or upstream firewall. The machine currently has no host firewall policy.
-6. The Authentik and PostgreSQL images are pinned by version and registry digest. Update deliberately. Back up PostgreSQL and `/var/lib/authentik/data` before an Authentik upgrade.
+
 
 Apply the machine after its required state is on the repository's `main` branch:
 
@@ -146,7 +146,7 @@ The secret values travel over SSH stdin. They do not appear in command arguments
 
 ## Back up and restore
 
-Back up PostgreSQL with a database-aware backup method and include `/var/lib/authentik/data` if it contains uploaded files. Store backups off the `services.lan` host. Test a restore before relying on it. Keep the `AUTHENTIK_SECRET_KEY` and both age recovery materials separate from the database backup.
+Back up PostgreSQL with a database-aware backup method. Include the `authentik-data` Podman volume if it contains uploaded files. Store backups off the `services.lan` host. Test a restore before relying on it. Keep the `AUTHENTIK_SECRET_KEY` and both age recovery materials separate from the database backup.
 
 To restore the software age identity after loss of the workstation key file, first unlock gopass with a configured recovery-capable GPG key. Write the result to a protected file, then verify its recipient before using it:
 

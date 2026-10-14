@@ -15,7 +15,7 @@ Environment=AUTHENTIK_POSTGRESQL__PASSWORD=file:///run/secrets/authentik-pg-pass
 Environment=AUTHENTIK_SECRET_KEY=file:///run/secrets/authentik-secret-key
 Secret=authentik-pg-password
 Secret=authentik-secret-key
-Volume=/var/lib/authentik/data:/data:Z
+Volume=authentik-data.volume:/data
 HealthCmd=ak healthcheck
 HealthInterval=30s
 HealthRetries=3
