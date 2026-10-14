@@ -229,7 +229,7 @@ While the SSH tunnel is open, check `http://127.0.0.1:9000/application/o/godoxy/
 
    ```bash
    ssh core@services.lan \
-     'sudo install -d -o 1000 -g 1000 /var/lib/godoxy/{logs,data,certs}'
+     'sudo install -d -o 1000 -g 1000 /var/lib/godoxy/logs /var/lib/godoxy/data /var/lib/godoxy/certs'
    ```
 
    Copy the locally issued certificate and private key to `/var/lib/godoxy/certs/cert.crt` and `/var/lib/godoxy/certs/priv.key`, then set owner `1000:1000`, certificate mode `0644`, and private-key mode `0400`. Keep the private key out of Git.
