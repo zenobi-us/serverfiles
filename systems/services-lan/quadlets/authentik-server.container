@@ -13,7 +13,7 @@ Environment=AUTHENTIK_POSTGRESQL__NAME=authentik
 Environment=AUTHENTIK_POSTGRESQL__USER=authentik
 Environment=AUTHENTIK_POSTGRESQL__PASSWORD=file:///run/secrets/authentik-pg-password
 Environment=AUTHENTIK_SECRET_KEY=file:///run/secrets/authentik-secret-key
-Environment=AUTHENTIK_LISTEN__TRUSTED_PROXY_CIDRS=127.0.0.1/32
+Environment=AUTHENTIK_LISTEN__TRUSTED_PROXY_CIDRS=127.0.0.1/32,10.89.0.1/32
 Secret=authentik-pg-password
 Secret=authentik-secret-key
 Volume=authentik-data.volume:/data

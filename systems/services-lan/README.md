@@ -39,7 +39,6 @@ Use this checklist to deploy Authentik and GoDoxy on `services.lan` and enable O
 
 ## 2. Deploy Authentik and create its administrator
 
-- [ ] Commit and push the provisioning fixes to `main` before retrying. They correct the SELinux label on the installed `mise` binary and the invalid `--machine` usage declaration in the apply task.
 - [ ] Apply the revision now available on `main`:
 
   ```bash
@@ -70,19 +69,28 @@ GoDoxy remains stopped until `/var/lib/godoxy/enabled` exists. This allows Authe
 
 Keep the SSH tunnel open while configuring the provider in Authentik.
 
-- [ ] Create an application with slug `godoxy` and an OAuth2/OpenID provider using authorization code flow.
+For exact provider values, secret handling, host requirements, and verification steps, follow [the detailed GoDoxy setup](../../docs/how-to/deploy-authentik.md#connect-godoxy-to-authentik).
+`Authorization Flow` controls Authentik's user-consent step. It is not the OAuth2 grant type.
+
+- [ ] Create an application with slug `godoxy` and an OAuth2/OpenID provider.
+- [ ] Set `Authorization Flow` to `default-provider-authorization-explicit-consent (Authorize Application)`.
+- [ ] Set `Client Type` to `Confidential`. GoDoxy uses a client ID and client secret.
 - [ ] Use Authentik's self-signed signing certificate, no encryption key, and issuer mode based on the application slug.
 - [ ] Register this exact redirect URI: `https://godoxy.services.lan/auth/callback`.
 - [ ] Enable the `openid`, `profile`, `email`, and `groups` scopes. Do not request `offline_access` for this setup.
 - [ ] Create the `godoxy-admins` group. Add only users who may access the GoDoxy WebUI and configure the `groups` claim to include that group.
-- [ ] Check the provider discovery document through the SSH tunnel. Its `issuer` must exactly match the configured GoDoxy issuer:
+- [ ] Check the provider discovery document through the SSH tunnel. Send the external host and HTTPS scheme:
 
   ```bash
-  curl -fsS http://127.0.0.1:9000/application/o/godoxy/.well-known/openid-configuration |
+  curl -fsS \
+    -H 'Host: authentik.services.lan' \
+    -H 'X-Forwarded-Host: authentik.services.lan' \
+    -H 'X-Forwarded-Proto: https' \
+    http://127.0.0.1:9000/application/o/godoxy/.well-known/openid-configuration |
     jq -e '.issuer == "https://authentik.services.lan/application/o/godoxy/"'
   ```
 
-  Stop if this check fails. Correct Authentik's externally visible host or issuer configuration before enabling GoDoxy.
+  If this check fails, correct the trusted proxy CIDR or forwarded headers before you enable GoDoxy.
 
 - [ ] Store the generated client ID and client secret in gopass, then add them to fnox without displaying their values:
 

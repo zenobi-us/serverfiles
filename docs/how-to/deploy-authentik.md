@@ -174,47 +174,118 @@ Configure Discord and other required identity sources, then create Authentik app
 
 See [Authentik's deployment documentation](https://docs.goauthentik.io/install-config/install/container/) and [age-plugin-yubikey](https://github.com/str4d/age-plugin-yubikey) for current setup details.
 
-## GoDoxy with Authentik OIDC
+## Connect GoDoxy to Authentik
 
-The services-lan GoDoxy deployment is independent of dev-lan. It uses the assumed internal names `godoxy.services.lan` and `authentik.services.lan`. DNS for both names and a certificate trusted by clients must exist before OIDC login can work. The certificate is intentionally machine-local; do not commit its private key. GoDoxy routes Authentik's HTTPS hostname to `http://127.0.0.1:9000`. See the [GoDoxy OIDC guide](https://docs.godoxy.dev/docs/godoxy/getting-started/OIDC) and [Authentik OAuth2 provider guide](https://docs.goauthentik.io/add-secure-apps/providers/oauth2/).
+GoDoxy uses Authentik for WebUI sign-in. Authentik remains on loopback port 9000. GoDoxy proxies `authentik.services.lan` to that port.
 
-The GoDoxy image is pinned by version and registry digest. GoDoxy runs with host networking, a read-only root filesystem, dropped capabilities except `NET_BIND_SERVICE`, and no Podman socket access. Its routes are static YAML files managed by this repository, using GoDoxy's [route-file configuration](https://docs.godoxy.dev/docs/godoxy/getting-started/Configuring-Routes); it does not discover containers dynamically.
+The service names are `authentik.services.lan` and `godoxy.services.lan`. Both names must resolve to the services host. GoDoxy serves HTTPS for both names with the certificate at `/var/lib/godoxy/certs/cert.crt`.
 
-### Create the Authentik provider
+GoDoxy stays stopped until `/var/lib/godoxy/enabled` exists. Complete the steps in order. Do not create that file before the final step.
 
-Create the provider while using the SSH tunnel to Authentik; the callback and issuer below are the public HTTPS addresses that GoDoxy will serve after activation.
+### 1. Prepare Authentik
 
-1. In Authentik, create an application with slug `godoxy` and an OAuth2/OpenID provider. Use authorization code flow, the `authentik Self-signed Certificate` signing key, no encryption key, and issuer mode based on the application slug.
-2. Add the exact redirect URI `https://godoxy.services.lan/auth/callback`.
-3. Enable the `openid`, `profile`, `email`, and `groups` scopes. GoDoxy documents an optional `offline_access` mapping; this setup does not request it.
-4. Create the Authentik group `godoxy-admins` and add only users who may access the GoDoxy WebUI. Configure Authentik's group scope mapping to emit this group in the `groups` claim.
-
-While the SSH tunnel is open, check `http://127.0.0.1:9000/application/o/godoxy/.well-known/openid-configuration`. Its `issuer` value must be exactly `https://authentik.services.lan/application/o/godoxy/`. If it differs, correct Authentik's externally visible host/issuer configuration before enabling GoDoxy.
-5. Copy the provider's generated client ID and client secret into gopass:
+1. Start an SSH tunnel to the Authentik loopback port:
 
    ```bash
-   gopass insert --multiline services-lan/godoxy/OIDC_CLIENT_ID
-   gopass insert --multiline services-lan/godoxy/OIDC_CLIENT_SECRET
-   gopass show --noparsing services-lan/godoxy/OIDC_CLIENT_ID |
-     tr -d '\n' | mise exec fnox@1.39.0 -- fnox set GODOXY_OIDC_CLIENT_ID
-   gopass show --noparsing services-lan/godoxy/OIDC_CLIENT_SECRET |
-     tr -d '\n' | mise exec fnox@1.39.0 -- fnox set GODOXY_OIDC_CLIENT_SECRET
+   ssh -L 9000:127.0.0.1:9000 core@services.lan
    ```
 
-   Keep the client secret encrypted; never put it in a Quadlet, environment file, or Git.
+2. Open `http://127.0.0.1:9000/if/flow/initial-setup/` on the workstation. Create the initial administrator.
+3. Keep port 9000 private. Do not publish it on the LAN or Internet.
 
-6. Create a stable random API JWT secret, store it in gopass at `services-lan/godoxy/API_JWT_SECRET`, and in fnox as `GODOXY_API_JWT_SECRET`:
+### 2. Create the Authentik application and provider
 
-   ```bash
-   openssl rand -base64 32 |
-     gopass insert --multiline services-lan/godoxy/API_JWT_SECRET
-   gopass show --noparsing services-lan/godoxy/API_JWT_SECRET |
-     tr -d '\n' | mise exec fnox@1.39.0 -- fnox set GODOXY_API_JWT_SECRET
+GoDoxy uses the OAuth2 authorization-code flow. Authentik's `Authorization Flow` field selects the user authorization flow, not the OAuth2 grant type.
+
+1. In Authentik, create an application with the slug `godoxy`.
+2. Create an OAuth2/OpenID provider for that application.
+3. In `Authorization Flow`, select `default-provider-authorization-explicit-consent (Authorize Application)`.
+4. In `Client Type`, select `Confidential`. GoDoxy uses a client ID and client secret.
+5. Use `authentik Self-signed Certificate` as the signing key. Do not set an encryption key.
+6. Set issuer mode to based on the application slug.
+7. Add this exact redirect URI:
+
+   ```text
+   https://godoxy.services.lan/auth/callback
    ```
 
-7. Transfer each fnox value over SSH stdin into a rootful Podman secret on services-lan:
+8. Enable the `openid`, `profile`, `email`, and `groups` scopes. Do not enable `offline_access`.
+9. Create the `godoxy-admins` group. Add only users who can access the GoDoxy WebUI.
+10. Configure the `groups` claim to include the `godoxy-admins` group.
+
+Authentik 2026.8 accepts forwarded headers only from trusted proxy addresses. This host trusts loopback and the Authentik Podman gateway, `10.89.0.1`.
+
+Because the SSH tunnel uses `127.0.0.1`, send the external host and HTTPS scheme in the forwarded headers:
+
+```bash
+curl -fsS \
+  -H 'Host: authentik.services.lan' \
+  -H 'X-Forwarded-Host: authentik.services.lan' \
+  -H 'X-Forwarded-Proto: https' \
+  http://127.0.0.1:9000/application/o/godoxy/.well-known/openid-configuration |
+  jq -e '.issuer == "https://authentik.services.lan/application/o/godoxy/"'
+```
+
+Stop if this command fails. Correct Authentik's external host or issuer before you continue.
+
+### 3. Store the GoDoxy credentials
+
+Store the provider's client ID and client secret in gopass. Then add them to fnox:
+
+```bash
+gopass insert --multiline services-lan/godoxy/OIDC_CLIENT_ID
+gopass insert --multiline services-lan/godoxy/OIDC_CLIENT_SECRET
+gopass show --noparsing services-lan/godoxy/OIDC_CLIENT_ID |
+  tr -d '\n' | mise exec fnox@1.39.0 -- fnox set GODOXY_OIDC_CLIENT_ID
+gopass show --noparsing services-lan/godoxy/OIDC_CLIENT_SECRET |
+  tr -d '\n' | mise exec fnox@1.39.0 -- fnox set GODOXY_OIDC_CLIENT_SECRET
+```
+
+Keep the client secret encrypted. Do not put it in a Quadlet, an environment file, or Git.
+
+GoDoxy also needs a separate API JWT secret. This secret protects GoDoxy's own API. It is not the Authentik client secret:
+
+```bash
+openssl rand -base64 32 |
+  gopass insert --multiline services-lan/godoxy/API_JWT_SECRET
+gopass show --noparsing services-lan/godoxy/API_JWT_SECRET |
+  tr -d '\n' | mise exec fnox@1.39.0 -- fnox set GODOXY_API_JWT_SECRET
+```
+
+### 4. Prepare the host before enabling GoDoxy
+
+1. Add internal DNS records for `authentik.services.lan` and `godoxy.services.lan`. Point both names to the fixed address of `services.lan`.
+2. Install a trusted certificate with both names in its Subject Alternative Name (SAN) list.
+3. Keep the certificate and private key on the host. Do not add the private key to Git.
+4. Create GoDoxy's state directories with UID and GID 1000:
 
    ```bash
+   ssh core@services.lan \
+     'sudo install -d -o 1000 -g 1000 /var/lib/godoxy/logs /var/lib/godoxy/data /var/lib/godoxy/certs'
+   ```
+
+5. Copy the certificate and private key from the workstation. Replace the source paths in these commands:
+
+   ```bash
+   chmod 0600 /path/to/priv.key
+   scp -p /path/to/cert.crt /path/to/priv.key core@services.lan:~/
+   ```
+
+6. Install both files with owner `1000:1000` and the required file modes:
+
+   ```bash
+   ssh core@services.lan \
+     'sudo install -o 1000 -g 1000 -m 0644 "$HOME/cert.crt" /var/lib/godoxy/certs/cert.crt &&
+      sudo install -o 1000 -g 1000 -m 0400 "$HOME/priv.key" /var/lib/godoxy/certs/priv.key &&
+      rm -f "$HOME/cert.crt" "$HOME/priv.key"'
+   ```
+
+7. Restrict inbound TCP ports 80 and 443 to intended client networks. The host has no firewall policy.
+8. Create the three rootful Podman secrets from fnox:
+
+   ```bash
+   set -o pipefail
+
    mise exec fnox@1.39.0 -- fnox exec -- sh -c 'printf %s "$GODOXY_OIDC_CLIENT_ID"' |
      ssh core@services.lan 'sudo podman secret create --replace godoxy-oidc-client-id -'
 
@@ -225,27 +296,27 @@ While the SSH tunnel is open, check `http://127.0.0.1:9000/application/o/godoxy/
      ssh core@services.lan 'sudo podman secret create --replace godoxy-api-jwt-secret -'
    ```
 
-8. Create the GoDoxy state directories and install the certificate before starting the GoDoxy unit:
+The secret values travel over SSH stdin. They do not appear in command arguments or temporary files.
 
-   ```bash
-   ssh core@services.lan \
-     'sudo install -d -o 1000 -g 1000 /var/lib/godoxy/logs /var/lib/godoxy/data /var/lib/godoxy/certs'
-   ```
+### 5. Enable GoDoxy
 
-   Copy the locally issued certificate and private key to `/var/lib/godoxy/certs/cert.crt` and `/var/lib/godoxy/certs/priv.key`, then set owner `1000:1000`, certificate mode `0644`, and private-key mode `0400`. Keep the private key out of Git.
+Create the enable marker only after the provider, secrets, DNS, certificate, firewall, and state directories are ready:
 
-9. Ensure the DNS, certificate, and three Podman secrets are in place. Then create the enable marker and reconcile from a repository revision available on `origin/main`:
+```bash
+ssh core@services.lan 'sudo touch /var/lib/godoxy/enabled'
+mise run machine:provision services-lan
+```
 
-   ```bash
-   ssh core@services.lan 'sudo touch /var/lib/godoxy/enabled'
-   mise run machine:provision services-lan
-   ```
+The host pulls the current revision from `origin/main`. Push all required repository changes before you run this command.
 
-The enable marker is an explicit cutover gate. Do not create it until Authentik's OIDC provider, the three Podman secrets, DNS, certificate, firewall, and GoDoxy state directories are ready. Removing the marker does not stop a running GoDoxy container; stop it explicitly before disabling access.
+### 6. Confirm sign-in
 
-### Verify the OIDC path
+1. Open `https://authentik.services.lan`. Make sure that the certificate is trusted and Authentik loads.
+2. Open `https://godoxy.services.lan`. Sign in through Authentik with a member of `godoxy-admins`.
+3. Sign in with a user outside `godoxy-admins`. GoDoxy must deny access.
+4. Make sure that the callback is `https://godoxy.services.lan/auth/callback`.
+5. Make sure that the issuer is `https://authentik.services.lan/application/o/godoxy/`.
+6. Make sure that port 9000 is reachable only from services-lan loopback.
+7. Make sure that the firewall restricts ports 80 and 443 to intended client networks.
 
-1. Confirm `https://authentik.services.lan` presents the trusted certificate and loads Authentik.
-2. Open `https://godoxy.services.lan`, sign in through Authentik, and confirm a user outside `godoxy-admins` is denied.
-3. Confirm `https://godoxy.services.lan/auth/callback` is the exact registered URI and the issuer is `https://authentik.services.lan/application/o/godoxy/`.
-4. Confirm port 9000 is reachable only from services-lan loopback and ports 80/443 are restricted by the firewall.
+To disable GoDoxy, stop `godoxy.service` before you remove `/var/lib/godoxy/enabled`. Removing the marker alone does not stop a running container.
