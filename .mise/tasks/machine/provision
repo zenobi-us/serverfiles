@@ -54,6 +54,7 @@ command -v curl >/dev/null
 if [[ ! -x /usr/local/bin/mise ]]; then
 	curl --proto '=https' --tlsv1.2 -sSf https://mise.run | MISE_INSTALL_PATH=/usr/local/bin/mise sh
 fi
+restorecon /usr/local/bin/mise
 
 install -d -m 0755 /var/lib/serverfiles
 if [[ -d /var/lib/serverfiles/repo/.git ]]; then
