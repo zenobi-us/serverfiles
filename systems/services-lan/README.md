@@ -39,6 +39,7 @@ Use this checklist to deploy Authentik and GoDoxy on `services.lan` and enable O
 
 ## 2. Deploy Authentik and create its administrator
 
+- [ ] Commit and push the provisioning fixes to `main` before retrying. They correct the SELinux label on the installed `mise` binary and the invalid `--machine` usage declaration in the apply task.
 - [ ] Apply the revision now available on `main`:
 
   ```bash
