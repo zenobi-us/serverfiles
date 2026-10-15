@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+resolver=192.168.86.253
+names=(authentik.services.lan.zenobi.us godoxy.services.lan.zenobi.us)
+
+fail() {
+	printf 'LAN acceptance: %s\n' "$1" >&2
+	exit 1
+}
+
+for command in dig curl jq; do
+	command -v "$command" >/dev/null || fail "missing $command"
+done
+
+release=$(mktemp -d)
+trap 'rm -rf "$release"' EXIT
+bin/render services-lan "$release" >/dev/null
+[[ -f $release/quadlets/coredns.container && -f $release/quadlets/godoxy.container ]] || fail 'rendered machine release is incomplete'
+
+for name in "${names[@]}"; do
+	for transport in +notcp +tcp; do
+		[[ $(dig "$transport" +time=3 +tries=1 +short @"$resolver" "$name" A) == "$resolver" ]] || fail "$name does not resolve over $transport"
+	done
+	[[ -z $(dig +time=3 +tries=1 +short @"$resolver" "$name" AAAA) ]] || fail "$name has unexpected IPv6 address"
+	[[ -z $(dig +time=3 +tries=1 +short @1.1.1.1 "$name" A) ]] || fail "$name has a public IPv4 address"
+	[[ -z $(dig +time=3 +tries=1 +short @1.1.1.1 "$name" AAAA) ]] || fail "$name has a public IPv6 address"
+	curl -fsS --max-time 10 -o /dev/null "https://$name/" || fail "trusted HTTPS failed for $name"
+done
+
+for transport in +notcp +tcp; do
+	answer=$(dig "$transport" +time=3 +tries=1 +noall +comments +answer @"$resolver" missing.services.lan.zenobi.us A)
+	[[ $answer == *'status: NXDOMAIN'* ]] || fail "unknown private name did not return NXDOMAIN over $transport"
+	[[ $answer != *"$resolver"* ]] || fail 'unknown private name returned service address'
+	[[ $(dig "$transport" +time=3 +tries=1 +short @"$resolver" services.lan A) == "$resolver" ]] || fail "SSH bootstrap name does not resolve over $transport"
+	[[ $(dig "$transport" +time=3 +tries=1 +short @"$resolver" example.com A) ]] || fail "Internet DNS failed over $transport"
+done
+
+curl -fsS --max-time 10 "https://${names[0]}/application/o/godoxy/.well-known/openid-configuration" |
+	jq -e --arg issuer "https://${names[0]}/application/o/godoxy/" '.issuer == $issuer' >/dev/null || fail 'OIDC discovery issuer does not match'
+printf 'LAN DNS, trusted HTTPS, and OIDC discovery passed. Check both login groups in a browser.\n'

@@ -1,0 +1,161 @@
+#!/usr/bin/env bash
+# Issues DNS-01 certificates with public Cloudflare DNS. Only production replaces GoDoxy TLS state.
+set -euo pipefail
+
+mode=${1:-production}
+if (($# > 1)) || [[ $mode != production && $mode != staging ]]; then
+	echo 'Usage: renew [staging|production]' >&2
+	exit 2
+fi
+
+acme_dir=/var/lib/serverfiles/acme/$mode
+cert_dir=/var/lib/godoxy/certs
+first_domain=authentik.services.lan.zenobi.us
+second_domain=godoxy.services.lan.zenobi.us
+image=docker.io/goacme/lego:v5.5.2@sha256:1944e8c36055beec47c7de6f15202b41128be75eea0ffa257f0c14d93c5155fd
+
+fail() {
+	echo "ACME $mode: $1" >&2
+	exit 1
+}
+
+on_exit() {
+	status=${1:-$?}
+	trap - EXIT
+	if ((status != 0)); then
+		echo "ACME $mode failed; the last installed certificate pair remains in place." >&2
+	fi
+	if [[ $mode == production && -f $cert_dir/current/cert.crt ]] &&
+		! openssl x509 -in "$cert_dir/current/cert.crt" -noout -checkend 1209600 >/dev/null 2>&1; then
+		echo 'ACME production: installed certificate expires within 14 days or cannot be read.' >&2
+		((status != 0)) || status=1
+	fi
+	exit "$status"
+}
+trap on_exit EXIT
+
+((EUID == 0)) || fail 'run as root.'
+command -v podman >/dev/null || fail 'podman is required.'
+command -v openssl >/dev/null || fail 'openssl is required.'
+command -v flock >/dev/null || fail 'flock is required.'
+exec 9>/run/lock/services-lan-acme.lock
+flock -n 9 || fail 'another ACME run is in progress.'
+
+email_file=/etc/serverfiles/acme-email
+[[ -f $email_file ]] || fail "create $email_file with one ACME contact address."
+IFS= read -r email <"$email_file" || [[ -n $email ]] || fail 'ACME contact address is empty.'
+[[ $email =~ ^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$ ]] || fail 'ACME contact address is invalid.'
+podman secret inspect cloudflare-dns-token >/dev/null 2>&1 || fail 'create the root Podman secret cloudflare-dns-token.'
+
+install -d -m 0700 /var/lib/serverfiles/acme "$acme_dir"
+if [[ $mode == production ]]; then
+	install -d -m 0755 "$cert_dir" "$cert_dir/releases"
+	[[ ! -e $cert_dir/current || -L $cert_dir/current ]] || fail 'current must be a symlink to a certificate release.'
+	[[ ! -L $cert_dir/current || -d $cert_dir/current ]] || fail 'current points to a missing certificate release.'
+	server=https://acme-v02.api.letsencrypt.org/directory
+else
+	server=https://acme-staging-v02.api.letsencrypt.org/directory
+fi
+
+lego_flags=(
+	--path /acme
+	--server "$server"
+	--email "$email"
+	--accept-tos
+	--no-bundle
+	--dns cloudflare
+	--dns.resolvers 1.1.1.1:53
+	--dns.resolvers 8.8.8.8:53
+	--domains "$first_domain"
+	--domains "$second_domain"
+	--force-cert-domains
+	--renew-days 30
+)
+if [[ $mode == staging ]]; then
+	lego_flags+=(--renew-force)
+fi
+# Suppress provider output: an upstream error could otherwise write credentials to the journal.
+if ! podman run --rm --pull=missing --network=host \
+	--secret cloudflare-dns-token,type=mount,target=cf-token \
+	--env CF_DNS_API_TOKEN_FILE=/run/secrets/cf-token \
+	--volume "$acme_dir:/acme:Z" \
+	"$image" run "${lego_flags[@]}" >/dev/null 2>&1; then
+	fail 'certificate issuance or renewal failed; installed certificate remains unchanged.'
+fi
+
+source_leaf=$acme_dir/certificates/$first_domain.crt
+source_issuer=$acme_dir/certificates/$first_domain.issuer.crt
+source_key=$acme_dir/certificates/$first_domain.key
+[[ -s $source_leaf && -s $source_issuer && -s $source_key ]] || fail 'ACME client did not provide a certificate, issuer chain, and private key.'
+source_cert=$acme_dir/$first_domain.fullchain.crt
+install -m 0600 /dev/null "$source_cert"
+cat "$source_leaf" "$source_issuer" >"$source_cert"
+
+validate_pair() {
+	local cert=$1 key=$2 sans cert_pub key_pub
+	openssl x509 -in "$cert" -noout -checkend 1209600 >/dev/null 2>&1 || return 1
+	openssl x509 -in "$cert" -noout -checkhost "$first_domain" >/dev/null 2>&1 || return 1
+	openssl x509 -in "$cert" -noout -checkhost "$second_domain" >/dev/null 2>&1 || return 1
+	sans=$(openssl x509 -in "$cert" -noout -ext subjectAltName 2>/dev/null |
+		grep -oE 'DNS:[^,[:space:]]+' | sort) || return 1
+	[[ $sans == "DNS:$first_domain"$'\n'"DNS:$second_domain" ]] || return 1
+	cert_pub=$(openssl x509 -in "$cert" -pubkey -noout 2>/dev/null | openssl pkey -pubin -outform DER 2>/dev/null | sha256sum) || return 1
+	key_pub=$(openssl pkey -in "$key" -pubout -outform DER 2>/dev/null | sha256sum) || return 1
+	[[ $cert_pub == "$key_pub" ]] || return 1
+	if [[ $mode == production ]]; then
+		openssl verify -CAfile /etc/ssl/certs/ca-certificates.crt -untrusted "$cert" "$cert" >/dev/null 2>&1 || return 1
+	fi
+}
+
+validate_pair "$source_cert" "$source_key" || fail 'certificate SANs, trust, validity, or key do not match.'
+if [[ $mode == staging ]]; then
+	echo 'ACME staging: validated certificate and private key; GoDoxy was not changed.'
+	exit 0
+fi
+
+if [[ -f $cert_dir/current/cert.crt ]] && cmp -s "$source_cert" "$cert_dir/current/cert.crt" &&
+	cmp -s "$source_key" "$cert_dir/current/priv.key"; then
+	echo 'ACME production: certificate is unchanged.'
+	exit 0
+fi
+
+incoming=$(mktemp -d "$cert_dir/releases/.incoming.XXXXXXXX")
+next_link=$cert_dir/.current-$$
+cleanup() {
+	local status=$?
+	rm -f "$next_link"
+	if [[ -n $incoming && -d $incoming ]]; then
+		rm -rf "$incoming"
+	fi
+	on_exit "$status"
+}
+trap cleanup EXIT
+install -o 1000 -g 1000 -m 0644 "$source_cert" "$incoming/cert.crt"
+install -o 1000 -g 1000 -m 0400 "$source_key" "$incoming/priv.key"
+validate_pair "$incoming/cert.crt" "$incoming/priv.key" || fail 'installed certificate pair failed verification.'
+chmod 0755 "$incoming"
+
+previous=
+if [[ -L $cert_dir/current ]]; then
+	previous=$(readlink "$cert_dir/current")
+fi
+release_name=$(date -u +%Y%m%dT%H%M%SZ)-$$
+mv -T "$incoming" "$cert_dir/releases/$release_name"
+incoming=
+ln -s "releases/$release_name" "$next_link"
+mv -Tf "$next_link" "$cert_dir/current"
+
+if systemctl is-active --quiet godoxy.service; then
+	if ! systemctl restart godoxy.service; then
+		if [[ -n $previous ]]; then
+			if ! ln -s "$previous" "$next_link" || ! mv -Tf "$next_link" "$cert_dir/current"; then
+				fail 'GoDoxy restart failed and the previous certificate link could not be restored.'
+			fi
+			systemctl restart godoxy.service || true
+		else
+			rm -f "$cert_dir/current"
+		fi
+		fail 'GoDoxy restart failed; restored the previous certificate pair.'
+	fi
+fi
+echo 'ACME production: installed a verified certificate pair.'

@@ -1,7 +1,7 @@
 autocert:
   provider: local
-  cert_path: /app/certs/cert.crt
-  key_path: /app/certs/priv.key
+  cert_path: /app/certs/current/cert.crt
+  key_path: /app/certs/current/priv.key
 
 providers:
   include:
@@ -10,4 +10,4 @@ providers:
 webui:
   display_name: Services LAN
   aliases:
-    - godoxy.services.lan
+    - godoxy.services.lan.zenobi.us

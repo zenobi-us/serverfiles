@@ -2,11 +2,13 @@
 set -euo pipefail
 
 release=${1:?usage: bin/reconcile <release-directory>}
+systemd=/etc/systemd/system
 quadlets=/etc/containers/systemd
 config=/etc/serverfiles/config
 state_dir=/var/lib/serverfiles
 unit_state=$state_dir/managed-units
 file_state=$state_dir/managed-quadlets
+native_state=$state_dir/managed-systemd-units
 
 [[ -d $release ]] || {
 	echo "Missing release directory: $release" >&2
@@ -15,19 +17,35 @@ file_state=$state_dir/managed-quadlets
 
 mapfile -t previous_units < <([[ -f $unit_state ]] && cat "$unit_state" || true)
 mapfile -t previous_files < <([[ -f $file_state ]] && cat "$file_state" || true)
+mapfile -t previous_native < <([[ -f $native_state ]] && cat "$native_state" || true)
 mapfile -t wanted_units < <([[ -f $release/units ]] && sed '/^[[:space:]]*#/d; /^[[:space:]]*$/d' "$release/units" || true)
 mapfile -t wanted_files < <([[ -d $release/quadlets ]] && find "$release/quadlets" -maxdepth 1 -type f -printf '%f\n' | sort || true)
+mapfile -t wanted_native < <([[ -d $release/systemd ]] && find "$release/systemd" -maxdepth 1 -type f -printf '%f\n' | sort || true)
+for unit in "${wanted_units[@]}"; do
+	if [[ $unit == *.timer ]] && systemctl is-active --quiet "$unit"; then
+		systemctl stop "$unit"
+	fi
+done
 
-install -d -m 0755 "$quadlets" "$config" "$state_dir"
+install -d -m 0755 "$quadlets" "$config" "$state_dir" "$systemd"
 for file in "${previous_files[@]}"; do
 	if ! printf '%s\n' "${wanted_files[@]}" | grep -Fxq -- "$file"; then
 		rm -f "$quadlets/$file"
+	fi
+done
+for file in "${previous_native[@]}"; do
+	if ! printf '%s\n' "${wanted_native[@]}" | grep -Fxq -- "$file"; then
+		systemctl disable --now "$file" || true
+		rm -f "$systemd/$file"
 	fi
 done
 
 if [[ -d $release/quadlets ]]; then
 	cp -a "$release/quadlets/." "$quadlets/"
 fi
+for file in "${wanted_native[@]}"; do
+	install -m 0644 "$release/systemd/$file" "$systemd/$file"
+done
 
 rm -rf "$config"
 install -d -m 0755 "$config"
@@ -36,6 +54,11 @@ if [[ -d $release/config ]]; then
 fi
 
 systemctl daemon-reload
+for file in "${wanted_native[@]}"; do
+	if [[ $file == *.timer ]]; then
+		systemctl enable "$file"
+	fi
+done
 
 for unit in "${previous_units[@]}"; do
 	if ! printf '%s\n' "${wanted_units[@]}" | grep -Fxq -- "$unit"; then
@@ -49,3 +72,8 @@ done
 
 printf '%s\n' "${wanted_units[@]}" >"$unit_state"
 printf '%s\n' "${wanted_files[@]}" >"$file_state"
+if ((${#wanted_native[@]})); then
+	printf '%s\n' "${wanted_native[@]}" >"$native_state"
+else
+	: >"$native_state"
+fi

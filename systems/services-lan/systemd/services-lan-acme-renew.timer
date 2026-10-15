@@ -1,0 +1,11 @@
+[Unit]
+Description=Check services-lan HTTPS certificate daily
+
+[Timer]
+OnCalendar=*-*-* 04:17:00
+Persistent=true
+RandomizedDelaySec=30min
+Unit=services-lan-acme-renew.service
+
+[Install]
+WantedBy=timers.target

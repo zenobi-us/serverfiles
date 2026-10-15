@@ -6,7 +6,7 @@ Use this checklist to deploy Authentik and GoDoxy on `services.lan` and enable O
 
 ## 1. Publish and prepare
 
-- [x] Commit and push the repository changes to `main`. `services.lan` reconciles from `origin/main`; it cannot deploy an uncommitted working tree.
+- [ ] Commit and push these changes to `main`. `services.lan` reconciles from `origin/main`.
 - [x] The Authentik rootful Podman secrets `authentik-pg-password` and `authentik-secret-key` are installed. To create or replace them from fnox, run these commands from the repository root; they send each value to the host over SSH stdin without printing it:
 
   ```bash
@@ -29,13 +29,9 @@ Use this checklist to deploy Authentik and GoDoxy on `services.lan` and enable O
 
 - [x] Verified the Authentik Quadlet binds port 9000 only to loopback with `PublishPort=127.0.0.1:9000:9000`. No host listener is expected before Authentik is deployed.
 
-- [ ] Confirm the host or upstream firewall will restrict inbound Transmission Control Protocol (TCP) ports 80 and 443 to intended client networks. The host currently has no firewall policy.
-- [ ] Add supported local DNS records for `authentik.services.lan` and `godoxy.services.lan`, both pointing to services-lan's fixed LAN address.
-      Verify name resolution from a client on the services LAN:
-
-  ```bash
-  getent ahostsv4 authentik.services.lan godoxy.services.lan
-  ```
+- [ ] Reserve `192.168.86.253` for `services.lan` in DHCP. Check that port 53 is free on the LAN address.
+- [ ] Restrict inbound UDP and TCP port 53, and TCP ports 80 and 443, to intended LAN networks. The host has no managed firewall policy. Follow [Private LAN DNS and HTTPS deployment](../../docs/how-to/deploy-private-lan-dns-acme.md) for checks and rollback.
+- [ ] Confirm `authentik.services.lan.zenobi.us` and `godoxy.services.lan.zenobi.us` resolve through CoreDNS before you change router or DHCP DNS.
 
 ## 2. Deploy Authentik and create its administrator
 
@@ -76,18 +72,18 @@ For exact provider values, secret handling, host requirements, and verification 
 - [ ] Set `Authorization Flow` to `default-provider-authorization-explicit-consent (Authorize Application)`.
 - [ ] Set `Client Type` to `Confidential`. GoDoxy uses a client ID and client secret.
 - [ ] Use Authentik's self-signed signing certificate, no encryption key, and issuer mode based on the application slug.
-- [ ] Register this exact redirect URI: `https://godoxy.services.lan/auth/callback`.
+- [ ] Register this exact redirect URI: `https://godoxy.services.lan.zenobi.us/auth/callback`.
 - [ ] Enable the `openid`, `profile`, `email`, and `groups` scopes. Do not request `offline_access` for this setup.
 - [ ] Create the `godoxy-admins` group. Add only users who may access the GoDoxy WebUI and configure the `groups` claim to include that group.
 - [ ] Check the provider discovery document through the SSH tunnel. Send the external host and HTTPS scheme:
 
   ```bash
   curl -fsS \
-    -H 'Host: authentik.services.lan' \
-    -H 'X-Forwarded-Host: authentik.services.lan' \
+    -H 'Host: authentik.services.lan.zenobi.us' \
+    -H 'X-Forwarded-Host: authentik.services.lan.zenobi.us' \
     -H 'X-Forwarded-Proto: https' \
     http://127.0.0.1:9000/application/o/godoxy/.well-known/openid-configuration |
-    jq -e '.issuer == "https://authentik.services.lan/application/o/godoxy/"'
+    jq -e '.issuer == "https://authentik.services.lan.zenobi.us/application/o/godoxy/"'
   ```
 
   If this check fails, correct the trusted proxy CIDR or forwarded headers before you enable GoDoxy.
@@ -141,23 +137,22 @@ For exact provider values, secret handling, host requirements, and verification 
     'sudo install -d -o 1000 -g 1000 /var/lib/godoxy/logs /var/lib/godoxy/data /var/lib/godoxy/certs'
   ```
 
-- [ ] Install a trusted Transport Layer Security (TLS) certificate whose Subject Alternative Names cover both `authentik.services.lan` and `godoxy.services.lan` at `/var/lib/godoxy/certs/cert.crt`.
-- [ ] Install its private key at `/var/lib/godoxy/certs/priv.key`. Set owner `1000:1000`, certificate mode `0644`, and private-key mode `0400`. Keep the private key out of Git.
-- [ ] Confirm firewall restrictions and DNS are in place before enabling GoDoxy.
+- [ ] Issue the certificate with the DNS-01 workflow in [Private LAN DNS and HTTPS deployment](../../docs/how-to/deploy-private-lan-dns-acme.md). Check both Subject Alternative Names and the renewal timer. Keep the private key outside Git.
+- [ ] Confirm the firewall restricts DNS and HTTPS to the LAN. After checking the active rules, create `/var/lib/godoxy/firewall-verified` as root with mode `0600`. Use the command in [Private LAN DNS and HTTPS deployment](../../docs/how-to/deploy-private-lan-dns-acme.md#enable-lan-https-after-preflight).
 
 ## 5. Enable GoDoxy and verify access
 
-- [ ] Create the enable marker and reconcile from `main`:
+- [ ] Run `/etc/serverfiles/config/godoxy/preflight.sh` as root on `services.lan`. Create the enable marker only if it passes:
 
   ```bash
-  ssh core@services.lan 'sudo touch /var/lib/godoxy/enabled'
+  ssh core@services.lan 'sudo /etc/serverfiles/config/godoxy/preflight.sh && sudo touch /var/lib/godoxy/enabled'
   mise run machine:provision services-lan
   ```
 
-- [ ] Confirm `https://authentik.services.lan` loads with a certificate trusted by clients.
-- [ ] Open `https://godoxy.services.lan` and confirm it redirects to Authentik for sign-in.
+- [ ] Confirm `https://authentik.services.lan.zenobi.us` loads with a certificate trusted by LAN clients.
+- [ ] Open `https://godoxy.services.lan.zenobi.us` and confirm it redirects to Authentik for sign-in.
 - [ ] Confirm a member of `godoxy-admins` can sign in and a user outside that group is denied.
-- [ ] Confirm the Authentik issuer and GoDoxy callback match the registered values.
+- [ ] Confirm the issuer and callback match the registered new names.
 - [ ] Confirm port 9000 is reachable only on loopback and ports 80/443 are limited by the firewall.
 - [ ] Confirm no Podman socket is mounted into the GoDoxy or Authentik containers. GoDoxy routes are static YAML files managed in this repository.
 

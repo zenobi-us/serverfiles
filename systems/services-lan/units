@@ -3,4 +3,6 @@ authentik-db-volume.service
 authentik-postgresql.service
 authentik-server.service
 authentik-worker.service
+coredns.service
 godoxy.service
+services-lan-acme-renew.timer
