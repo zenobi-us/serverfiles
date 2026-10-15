@@ -3,7 +3,7 @@ id: private-lan-dns-acme
 title: Provide private LAN DNS and trusted HTTPS for services-lan
 type: task
 triage: ready-for-agent
-work_status: unclaimed
+work_status: claimed
 blocked_by: []
 parent: private-lan-dns-acme
 ---
