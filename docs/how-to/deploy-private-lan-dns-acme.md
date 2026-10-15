@@ -54,7 +54,7 @@ Follow these sections in order:
    mise exec fnox@1.39.0 -- fnox exec -- sh -c 'printf %s "$CLOUDFLARE_DNS_TOKEN"' |
      ssh core@services.lan 'sudo podman secret create --replace cloudflare-dns-token -'
    ssh core@services.lan \
-     'sudo podman secret inspect --format "{{.Name}}" cloudflare-dns-token'
+     'sudo podman secret inspect --format "{{.Spec.Name}}" cloudflare-dns-token'
    ```
 
    The last command must show only `cloudflare-dns-token`. The ACME client reads the token from `/run/secrets/cf-token` inside its container.
