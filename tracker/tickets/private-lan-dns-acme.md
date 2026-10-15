@@ -3,7 +3,7 @@ id: private-lan-dns-acme
 title: Provide private LAN DNS and trusted HTTPS for services-lan
 type: task
 triage: ready-for-agent
-work_status: claimed
+work_status: implemented
 blocked_by: []
 parent: private-lan-dns-acme
 ---
@@ -25,3 +25,4 @@ Implement the [private LAN DNS and trusted HTTPS specification](../initiatives/p
 ## Comments
 
 - Use the LAN client as the primary acceptance seam. The spec records supporting checks for public DNS and certificate renewal.
+- Review verdict: code changes reviewed in [review-20261015](../../workflows/private-lan-dns-acme/artifacts/reviews/review-20261015.md) at `71555d2` on 2026-10-15. Live LAN DNS, TLS, OIDC sign-in, firewall isolation, and certificate issuance remain open until the operator completes the human-only steps. `mise run check` fails on pre-existing formatting in `bin/worktree-up.sh` and `bin/worktree-down.sh`.
