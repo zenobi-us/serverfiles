@@ -52,6 +52,7 @@ install -d -m 0755 "$config"
 if [[ -d $release/config ]]; then
 	cp -a "$release/config/." "$config/"
 fi
+restorecon -R "$config"
 
 systemctl daemon-reload
 for file in "${wanted_native[@]}"; do
