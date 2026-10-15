@@ -33,19 +33,32 @@ Follow these sections in order:
 
 ## Install the DNS token and release
 
-1. In Cloudflare, confirm that `zenobi.us` is the public authoritative zone. Create a token with DNS edit permission limited to this zone. Do not grant account-wide access. This is a human-only step.
-2. Store the token outside Git in fnox. Send it directly through SSH stdin to a rootful Podman secret. Do not place it in a shell argument or print it:
+1. Open [Cloudflare API Tokens](https://dash.cloudflare.com/profile/api-tokens/). Select **Create Token**. Use the **Edit zone DNS** template or a custom user token. Name it `services-lan-acme`.
+2. Set **Zone / Zone / Read** and **Zone / DNS / Edit** permissions. Under zone resources, include only `zenobi.us`. Lego reads the zone ID and edits DNS-01 TXT records. Do not use a Global API Key. Do not grant access to all zones. If the token has an expiry, plan its replacement before that date.
+3. Select **Continue to summary**. Make sure that the summary shows `zenobi.us` and the two permissions. Select **Create Token**. Cloudflare shows the token value once. Do not paste it into a command, chat, or repository file. See the [Cloudflare token procedure](https://developers.cloudflare.com/fundamentals/api/get-started/create-token/) and [lego Cloudflare permissions](https://go-acme.github.io/lego/dns/cloudflare/) if the dashboard labels change.
+4. Store the token in gopass and fnox on the workstation. Paste it into the secure editor that `gopass insert` opens. These commands do not display the token:
 
    ```bash
+   set -o pipefail
    gopass insert --multiline services-lan/acme/CLOUDFLARE_DNS_TOKEN
    gopass show --noparsing services-lan/acme/CLOUDFLARE_DNS_TOKEN |
      tr -d '\n' | mise exec fnox@1.39.0 -- fnox set CLOUDFLARE_DNS_TOKEN
+   mise exec fnox@1.39.0 -- fnox exec -- sh -c 'test -n "$CLOUDFLARE_DNS_TOKEN"'
+   ```
+
+   `fnox set` stores encrypted data in `fnox.toml`. Check the Git diff before you commit it. Do not commit a plaintext token or a temporary token file.
+5. Transfer the fnox value over Secure Shell (SSH) standard input. Rootful Podman stores it as `cloudflare-dns-token` on `services.lan`. Do not put the value in a command argument or log:
+
+   ```bash
    set -o pipefail
    mise exec fnox@1.39.0 -- fnox exec -- sh -c 'printf %s "$CLOUDFLARE_DNS_TOKEN"' |
      ssh core@services.lan 'sudo podman secret create --replace cloudflare-dns-token -'
+   ssh core@services.lan \
+     'sudo podman secret inspect --format "{{.Name}}" cloudflare-dns-token'
    ```
 
-3. Set the Let's Encrypt account contact email on the host. Use the operator's real address, not a repository value:
+   The last command must show only `cloudflare-dns-token`. The ACME client reads the token from `/run/secrets/cf-token` inside its container.
+6. Set the Let's Encrypt account contact email on the host. Use an address that you monitor:
 
    ```bash
    ssh core@services.lan 'sudo install -d -m 0755 /etc/serverfiles'
@@ -53,10 +66,17 @@ Follow these sections in order:
    printf '%s\n' "$acme_email" |
      ssh core@services.lan 'sudo install -m 0644 /dev/stdin /etc/serverfiles/acme-email'
    unset acme_email
+   ssh core@services.lan 'sudo test -s /etc/serverfiles/acme-email'
    ```
 
-   Use an address that you monitor. The email is not a credential.
-4. Commit and push the release to `main`, then run `mise run machine:provision services-lan`. The rendered machine release installs CoreDNS, the ACME service and timer, and GoDoxy. GoDoxy remains stopped because `/var/lib/godoxy/enabled` does not exist. Confirm `systemctl status coredns.service services-lan-acme-renew.timer` through SSH. Check `journalctl -u services-lan-acme-renew.service` for renewal errors; do not include token values in logs or support output.
+   The email is not a credential. The ACME script reads it from `/etc/serverfiles/acme-email` and rejects an empty or invalid address.
+7. Commit and push the release to `main`, then run `mise run machine:provision services-lan`. The rendered release installs CoreDNS, the ACME service and timer, and GoDoxy. GoDoxy stays stopped until `/var/lib/godoxy/enabled` exists. Check the timer and CoreDNS through SSH:
+
+   ```bash
+   ssh core@services.lan 'systemctl status coredns.service services-lan-acme-renew.timer'
+   ```
+
+   If renewal fails, inspect `journalctl -u services-lan-acme-renew.service`. The journal does not contain the token value. Do not send secret values in support output.
 
 ## Check private and public DNS
 
