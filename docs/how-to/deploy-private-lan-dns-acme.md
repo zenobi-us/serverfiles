@@ -58,18 +58,23 @@ Follow these sections in order:
    ```
 
    The last command must show only `cloudflare-dns-token`. The ACME client reads the token from `/run/secrets/cf-token` inside its container.
-6. Set the Let's Encrypt account contact email on the host. Use an address that you monitor:
+6. Set the Let's Encrypt account contact email on the host. Use an address that you monitor. The commands work in Bash and Zsh. They replace an empty email file from a failed input attempt:
 
    ```bash
+   set -o pipefail
    ssh core@services.lan 'sudo install -d -m 0755 /etc/serverfiles'
-   read -r -p "Let's Encrypt contact email: " acme_email
-   printf '%s\n' "$acme_email" |
-     ssh core@services.lan 'sudo install -m 0644 /dev/stdin /etc/serverfiles/acme-email'
+   printf "Let's Encrypt contact email: " >&2
+   if IFS= read -r acme_email && [[ $acme_email == *@*.* ]]; then
+     printf '%s\n' "$acme_email" |
+       ssh core@services.lan 'sudo install -m 0644 /dev/stdin /etc/serverfiles/acme-email'
+   else
+     printf 'No valid email entered; host file unchanged.\n' >&2
+   fi
    unset acme_email
-   ssh core@services.lan 'sudo test -s /etc/serverfiles/acme-email'
+   ssh core@services.lan 'sudo bash -c '\''IFS= read -r email </etc/serverfiles/acme-email; test -n "$email"'\'''
    ```
 
-   The email is not a credential. The ACME script reads it from `/etc/serverfiles/acme-email` and rejects an empty or invalid address.
+   The last command returns a failure if the email is empty. It does not display the email. The ACME script also checks the email format.
 7. Commit and push the release to `main`, then run `mise run machine:provision services-lan`. The rendered release installs CoreDNS, the ACME service and timer, and GoDoxy. GoDoxy stays stopped until `/var/lib/godoxy/enabled` exists. Check the timer and CoreDNS through SSH:
 
    ```bash
