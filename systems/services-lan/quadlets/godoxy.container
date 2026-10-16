@@ -22,7 +22,9 @@ Environment=GODOXY_API_JWT_SECURE=true
 Secret=godoxy-oidc-client-id,type=env,target=GODOXY_OIDC_CLIENT_ID
 Secret=godoxy-oidc-client-secret,type=env,target=GODOXY_OIDC_CLIENT_SECRET
 Secret=godoxy-api-jwt-secret,type=env,target=GODOXY_API_JWT_SECRET
-Volume=/etc/serverfiles/config/godoxy:/app/config:ro,Z
+Volume=/var/lib/godoxy/config:/app/config:Z
+Volume=/etc/serverfiles/config/godoxy/config.yml:/app/config/config.yml:ro,Z
+Volume=/etc/serverfiles/config/godoxy/services.yml:/app/config/services.yml:ro,Z
 Volume=/var/lib/godoxy/logs:/app/logs:Z
 Volume=/var/lib/godoxy/error_pages:/app/error_pages:Z
 Volume=/var/lib/godoxy/data:/app/data:Z

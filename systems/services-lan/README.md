@@ -134,7 +134,7 @@ For exact provider values, secret handling, host requirements, and verification 
 
   ```bash
   ssh core@services.lan \
-    'sudo install -d -o 1000 -g 1000 /var/lib/godoxy/logs /var/lib/godoxy/data /var/lib/godoxy/certs /var/lib/godoxy/error_pages'
+    'sudo install -d -o 1000 -g 1000 /var/lib/godoxy/logs /var/lib/godoxy/data /var/lib/godoxy/certs /var/lib/godoxy/config /var/lib/godoxy/error_pages'
   ```
 
 - [ ] Issue the certificate with the DNS-01 workflow in [Private LAN DNS and HTTPS deployment](../../docs/how-to/deploy-private-lan-dns-acme.md). Check both Subject Alternative Names and the renewal timer. Keep the private key outside Git.
