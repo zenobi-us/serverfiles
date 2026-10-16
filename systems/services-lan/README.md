@@ -75,6 +75,7 @@ For exact provider values, secret handling, host requirements, and verification 
 - [ ] Register this exact redirect URI: `https://godoxy.services.lan.zenobi.us/auth/callback`.
 - [ ] Enable the `openid`, `profile`, and `email` scopes. Authentik's default `profile` mapping includes group membership. Do not request an unconfigured `groups` scope or `offline_access`.
 - [ ] Create the `godoxy-admins` group. Add only users who may access the GoDoxy WebUI. Confirm that the `profile` mapping sends their group name in the `groups` claim.
+- [ ] In Authentik, open the `godoxy` application, select **Policy / Group / User Bindings** → **Create or bind...** → **Bind a group**, and bind `godoxy-admins`. Leave **Negate** off and **Failure Result** set to deny. With this binding, Authentik denies non-members before issuing an authorization code; GoDoxy still checks the group claim.
 - [ ] Check the provider discovery document through the SSH tunnel. Send the external host and HTTPS scheme:
 
   ```bash

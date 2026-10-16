@@ -210,6 +210,7 @@ GoDoxy uses the OAuth2 authorization-code flow. Authentik's `Authorization Flow`
 8. Enable the `openid`, `profile`, and `email` scopes. Authentik's default `profile` mapping includes group membership. Do not request an unconfigured `groups` scope or `offline_access`.
 9. Create the `godoxy-admins` group. Add only users who can access the GoDoxy WebUI.
 10. Confirm that the `profile` mapping sends `godoxy-admins` in the `groups` claim for members.
+11. Open the `godoxy` application and select **Policy / Group / User Bindings** → **Create or bind...** → **Bind a group**. Bind `godoxy-admins` without negation, and keep **Failure Result** set to deny. Authentik denies non-members during authorization; GoDoxy independently checks group membership in the issued token.
 
 Authentik 2026.8 accepts forwarded headers only from trusted proxy addresses. This host trusts loopback and the Authentik Podman gateway, `10.89.0.1`.
 
