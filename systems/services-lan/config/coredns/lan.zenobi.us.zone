@@ -1,7 +1,7 @@
 $ORIGIN lan.zenobi.us.
 $TTL 300
 @ IN SOA ns1.lan.zenobi.us. hostmaster.lan.zenobi.us. (
-    2026101501 ; serial: increment when records change
+    2026101601 ; serial: increment when records change
     3600       ; refresh
     600        ; retry
     604800     ; expire
@@ -11,3 +11,6 @@ $TTL 300
 ns1 IN A 192.168.86.253
 authentik.services IN A 192.168.86.253
 godoxy.services IN A 192.168.86.253
+pve3 IN A 192.168.86.60
+pve4 IN A 192.168.86.70
+pve5 IN A 192.168.86.80
