@@ -100,6 +100,8 @@ dig @192.168.86.253 example.com A
 dig +tcp @192.168.86.253 example.com A
 ```
 
+The same private zone maps `pve3.lan.zenobi.us`, `pve4.lan.zenobi.us`, and `pve5.lan.zenobi.us` to `192.168.86.60`, `192.168.86.70`, and `192.168.86.80`. Check each name over UDP and TCP against `192.168.86.253`. If a LAN client's router still returns `NXDOMAIN` after the zone update, wait for its cached negative answer to expire (up to 300 seconds) and check again.
+
 Check public DNS from outside the private resolver. Neither service name must have a public A or AAAA record:
 
 ```bash
