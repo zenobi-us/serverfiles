@@ -13,7 +13,7 @@ for name in godoxy-oidc-client-id godoxy-oidc-client-secret godoxy-api-jwt-secre
 	podman secret inspect "$name" >/dev/null 2>&1 || fail "missing Podman secret: $name"
 done
 
-for dir in /var/lib/godoxy/logs /var/lib/godoxy/data /var/lib/godoxy/certs; do
+for dir in /var/lib/godoxy/logs /var/lib/godoxy/data /var/lib/godoxy/certs /var/lib/godoxy/error_pages; do
 	[[ -d $dir && $(stat -c '%u:%g' "$dir") == 1000:1000 ]] || fail "missing or incorrectly owned state directory: $dir"
 done
 

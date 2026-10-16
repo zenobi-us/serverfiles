@@ -136,11 +136,11 @@ During an active ACME order, inspect the `_acme-challenge` TXT records through t
 ## Enable LAN HTTPS after preflight
 
 1. In Authentik, set issuer mode to the application slug, register `https://godoxy.services.lan.zenobi.us/auth/callback`, and grant `godoxy-admins` access to the GoDoxy application. Follow [Deploy Authentik on services-lan](deploy-authentik.md#connect-godoxy-to-authentik).
-2. Install the three GoDoxy Podman secrets and create `/var/lib/godoxy/logs`, `/var/lib/godoxy/data`, and `/var/lib/godoxy/certs` with ownership `1000:1000`. Follow the [services-lan deployment checklist](../../systems/services-lan/README.md#4-install-godoxy-secrets-certificate-and-state).
+2. Install the three GoDoxy Podman secrets and create `/var/lib/godoxy/logs`, `/var/lib/godoxy/data`, `/var/lib/godoxy/certs`, and `/var/lib/godoxy/error_pages` with ownership `1000:1000`. Follow the [services-lan deployment checklist](../../systems/services-lan/README.md#4-install-godoxy-secrets-certificate-and-state).
 3. After the firewall policy is applied and checked from allowed and blocked networks, record the human approval. Then run the preflight and create the enable marker:
 
    ```bash
-   ssh core@services.lan 'sudo install -d -m 0755 /var/lib/godoxy; sudo install -m 0600 -o root -g root /dev/null /var/lib/godoxy/firewall-verified; sudo /etc/serverfiles/config/godoxy/preflight.sh && sudo touch /var/lib/godoxy/enabled'
+   ssh core@services.lan 'sudo install -d -m 0755 /var/lib/godoxy; sudo install -m 0600 -o root -g root /dev/null /var/lib/godoxy/firewall-verified; sudo bash /etc/serverfiles/config/godoxy/preflight.sh && sudo touch /var/lib/godoxy/enabled'
    mise run machine:provision services-lan
    ```
 

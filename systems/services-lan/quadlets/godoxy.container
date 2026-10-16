@@ -24,11 +24,12 @@ Secret=godoxy-oidc-client-secret,type=env,target=GODOXY_OIDC_CLIENT_SECRET
 Secret=godoxy-api-jwt-secret,type=env,target=GODOXY_API_JWT_SECRET
 Volume=/etc/serverfiles/config/godoxy:/app/config:ro,Z
 Volume=/var/lib/godoxy/logs:/app/logs:Z
+Volume=/var/lib/godoxy/error_pages:/app/error_pages:Z
 Volume=/var/lib/godoxy/data:/app/data:Z
 Volume=/var/lib/godoxy/certs:/app/certs:Z
 
 [Service]
-ExecStartPre=/etc/serverfiles/config/godoxy/preflight.sh
+ExecStartPre=/usr/bin/bash /etc/serverfiles/config/godoxy/preflight.sh
 Restart=always
 TimeoutStartSec=900
 

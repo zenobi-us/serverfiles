@@ -134,7 +134,7 @@ For exact provider values, secret handling, host requirements, and verification 
 
   ```bash
   ssh core@services.lan \
-    'sudo install -d -o 1000 -g 1000 /var/lib/godoxy/logs /var/lib/godoxy/data /var/lib/godoxy/certs'
+    'sudo install -d -o 1000 -g 1000 /var/lib/godoxy/logs /var/lib/godoxy/data /var/lib/godoxy/certs /var/lib/godoxy/error_pages'
   ```
 
 - [ ] Issue the certificate with the DNS-01 workflow in [Private LAN DNS and HTTPS deployment](../../docs/how-to/deploy-private-lan-dns-acme.md). Check both Subject Alternative Names and the renewal timer. Keep the private key outside Git.
@@ -142,10 +142,10 @@ For exact provider values, secret handling, host requirements, and verification 
 
 ## 5. Enable GoDoxy and verify access
 
-- [ ] Run `/etc/serverfiles/config/godoxy/preflight.sh` as root on `services.lan`. Create the enable marker only if it passes:
+- [ ] Run the GoDoxy preflight as root on `services.lan`. Create the enable marker only if it passes:
 
   ```bash
-  ssh core@services.lan 'sudo /etc/serverfiles/config/godoxy/preflight.sh && sudo touch /var/lib/godoxy/enabled'
+  ssh core@services.lan 'sudo bash /etc/serverfiles/config/godoxy/preflight.sh && sudo touch /var/lib/godoxy/enabled'
   mise run machine:provision services-lan
   ```
 
