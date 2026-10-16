@@ -33,6 +33,7 @@ Volume=/var/lib/godoxy/certs:/app/certs:Z
 [Service]
 ExecStartPre=/usr/bin/bash /etc/serverfiles/config/godoxy/preflight.sh
 Restart=always
+RestartSec=5s
 TimeoutStartSec=900
 
 [Install]

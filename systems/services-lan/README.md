@@ -149,6 +149,8 @@ For exact provider values, secret handling, host requirements, and verification 
   mise run machine:provision services-lan
   ```
 
+- [ ] After the next `serverfiles-apply@services-lan.timer` run, confirm that `godoxy.service` is active. The scheduled apply restarts CoreDNS and GoDoxy. GoDoxy waits five seconds between startup attempts if DNS is temporarily unavailable.
+
 - [ ] Confirm `https://authentik.services.lan.zenobi.us` loads with a certificate trusted by LAN clients.
 - [ ] Open `https://godoxy.services.lan.zenobi.us` and confirm it redirects to Authentik for sign-in.
 - [ ] Confirm a member of `godoxy-admins` can sign in and a user outside that group is denied.
