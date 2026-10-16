@@ -73,8 +73,8 @@ For exact provider values, secret handling, host requirements, and verification 
 - [ ] Set `Client Type` to `Confidential`. GoDoxy uses a client ID and client secret.
 - [ ] Use Authentik's self-signed signing certificate, no encryption key, and issuer mode based on the application slug.
 - [ ] Register this exact redirect URI: `https://godoxy.services.lan.zenobi.us/auth/callback`.
-- [ ] Enable the `openid`, `profile`, `email`, and `groups` scopes. Do not request `offline_access` for this setup.
-- [ ] Create the `godoxy-admins` group. Add only users who may access the GoDoxy WebUI and configure the `groups` claim to include that group.
+- [ ] Enable the `openid`, `profile`, and `email` scopes. Authentik's default `profile` mapping includes group membership. Do not request an unconfigured `groups` scope or `offline_access`.
+- [ ] Create the `godoxy-admins` group. Add only users who may access the GoDoxy WebUI. Confirm that the `profile` mapping sends their group name in the `groups` claim.
 - [ ] Check the provider discovery document through the SSH tunnel. Send the external host and HTTPS scheme:
 
   ```bash

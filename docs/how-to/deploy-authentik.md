@@ -207,9 +207,9 @@ GoDoxy uses the OAuth2 authorization-code flow. Authentik's `Authorization Flow`
    https://godoxy.services.lan.zenobi.us/auth/callback
    ```
 
-8. Enable the `openid`, `profile`, `email`, and `groups` scopes. Do not enable `offline_access`.
+8. Enable the `openid`, `profile`, and `email` scopes. Authentik's default `profile` mapping includes group membership. Do not request an unconfigured `groups` scope or `offline_access`.
 9. Create the `godoxy-admins` group. Add only users who can access the GoDoxy WebUI.
-10. Configure the `groups` claim to include the `godoxy-admins` group.
+10. Confirm that the `profile` mapping sends `godoxy-admins` in the `groups` claim for members.
 
 Authentik 2026.8 accepts forwarded headers only from trusted proxy addresses. This host trusts loopback and the Authentik Podman gateway, `10.89.0.1`.
 

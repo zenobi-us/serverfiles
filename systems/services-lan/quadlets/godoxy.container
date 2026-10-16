@@ -16,7 +16,7 @@ DropCapability=ALL
 AddCapability=NET_BIND_SERVICE
 Environment=GODOXY_OIDC_ISSUER_URL=https://authentik.services.lan.zenobi.us/application/o/godoxy/
 Environment=GODOXY_OIDC_ALLOWED_GROUPS=godoxy-admins
-Environment=GODOXY_OIDC_SCOPES=openid,profile,email,groups
+Environment=GODOXY_OIDC_SCOPES=openid,profile,email
 Environment=GODOXY_API_ADDR=127.0.0.1:8888
 Environment=GODOXY_API_JWT_SECURE=true
 Secret=godoxy-oidc-client-id,type=env,target=GODOXY_OIDC_CLIENT_ID
