@@ -1,0 +1,31 @@
+[Unit]
+Description=HTTPS certificate for services-lan
+
+[Certificate]
+Authority=letsencrypt
+ContactEmailFile=/etc/serverfiles/acme-email
+AcceptTermsOfService=yes
+DNSProvider=cloudflare
+DNSCredential=podman-secret:cloudflare-dns-token
+DNSResolver=1.1.1.1:53
+DNSResolver=8.8.8.8:53
+Domain=authentik.services.lan.zenobi.us
+Domain=godoxy.services.lan.zenobi.us
+RenewBefore=30d
+MinimumValidity=14d
+StateDirectory=/var/lib/serverfiles/acme
+
+[Install]
+Directory=/var/lib/godoxy/certs
+CertificateFile=cert.crt
+PrivateKeyFile=priv.key
+User=1000
+Group=1000
+CertificateMode=0644
+PrivateKeyMode=0400
+RestartUnit=godoxy.service
+
+[Timer]
+OnCalendar=*-*-* 04:17:00
+Persistent=yes
+RandomizedDelaySec=30min

@@ -3,7 +3,7 @@
 Use this guide to deploy private service names and trusted HTTPS on `services.lan`.
 
 **Reader:** The operator of the services host and LAN router.  
-**Date:** 2026-10-15.
+**Date:** 2026-10-17.
 
 ## Overview
 
@@ -75,13 +75,24 @@ Follow these sections in order:
    ```
 
    The last command returns a failure if the email is empty. It does not display the email. The ACME script also checks the email format.
-7. Commit and push the release to `main`, then run `mise run machine:provision services-lan`. The rendered release installs CoreDNS, the ACME service and timer, and GoDoxy. GoDoxy stays stopped until `/var/lib/godoxy/enabled` exists. Check the timer and CoreDNS through SSH:
+7. Before the first production deployment, render the declaration and run staging on the host. This uses isolated staging state and does not change GoDoxy:
 
    ```bash
-   ssh core@services.lan 'systemctl status coredns.service services-lan-acme-renew.timer'
+   bin/render services-lan
+   staging_dir=$(ssh core@services.lan 'mktemp -d /tmp/serverfiles-certificate.XXXXXXXX')
+   scp .rendered/services-lan/config/certificates/{renew,services-lan.conf} "core@services.lan:$staging_dir/"
+   ssh core@services.lan "sudo bash '$staging_dir/renew' '$staging_dir/services-lan.conf' staging"
+   ssh core@services.lan "rm -rf '$staging_dir'"
+   unset staging_dir
    ```
 
-   If renewal fails, inspect `journalctl -u services-lan-acme-renew.service`. The journal does not contain the token value. Do not send secret values in support output.
+8. Commit and push the release to `main`, then run `mise run machine:provision services-lan`. Deployment activates the certificate timer, then starts `certificate-services-lan.service` before application restarts. Install the email and token first. GoDoxy stays stopped until `/var/lib/godoxy/enabled` exists. Check the timer and CoreDNS through SSH:
+
+   ```bash
+   ssh core@services.lan 'systemctl status coredns.service certificate-services-lan.timer'
+   ```
+
+   If renewal fails, inspect `journalctl -u certificate-services-lan.service`. Provider output is suppressed to protect credentials. Do not send secret values in support output.
 
 ## Check private and public DNS
 
@@ -115,30 +126,34 @@ During an active ACME order, inspect the `_acme-challenge` TXT records through t
 
 ## Issue and renew the certificate
 
-1. Test staging issuance on the host before production. Staging certificates are not browser-trusted:
+The [machine declaration](../../systems/services-lan/certificates/services-lan.certificate) owns certificate names, permissions, destination, and schedule. The shared runner does not require GoDoxy. See the [format reference](../reference/repository.md#certificatescertificate).
+
+1. For a staging recheck after deployment, run the shared runner. Staging certificates are not browser-trusted and never replace production files:
 
    ```bash
-   ssh core@services.lan 'sudo /etc/serverfiles/config/acme/renew staging'
+   ssh core@services.lan 'sudo /etc/serverfiles/config/certificates/renew /etc/serverfiles/config/certificates/services-lan.conf staging'
    ```
 
-2. Start the production service. It issues a certificate for both names and installs a verified certificate/key pair under `/var/lib/godoxy/certs/current/`. The release directories under `/var/lib/godoxy/certs/releases/` hold mutable host state, not Git files:
+2. Deployment already starts the production service. To run it manually, use the following command. It publishes a verified pair under `/var/lib/godoxy/certs/current/`. Existing ACME accounts and certificates remain under `/var/lib/serverfiles/acme/{production,staging}/`:
 
    ```bash
-   ssh core@services.lan 'sudo systemctl start services-lan-acme-renew.service'
+   ssh core@services.lan 'sudo systemctl start certificate-services-lan.service'
    ```
 
 3. Check the certificate names, expiry, and timer without displaying the key:
 
    ```bash
-   ssh core@services.lan 'sudo openssl x509 -in /var/lib/godoxy/certs/current/cert.crt -noout -dates -ext subjectAltName; systemctl list-timers services-lan-acme-renew.timer'
+   ssh core@services.lan 'sudo openssl x509 -in /var/lib/godoxy/certs/current/cert.crt -noout -dates -ext subjectAltName; systemctl list-timers certificate-services-lan.timer'
    ```
 
 4. Inspect the public TXT proof while the order is active. Run the same service again before its renewal window to confirm that it keeps the existing valid pair. If an issuance fails, confirm that the `current` link and served certificate remain unchanged. Check the service failure in `systemctl status` and `journalctl`. Repair the token, public DNS, or network path before the certificate expires. Check expiry periodically with `openssl x509 -checkend 2592000 -noout -in /var/lib/godoxy/certs/current/cert.crt` on the host.
 
+The daily timer remains active between deployments. Each apply publishes all certificates before consumer activation and application restarts. Unchanged pairs with matching metadata and no pending activation do not trigger a certificate-driven restart. Removing the declaration removes managed certificate units, but retains ACME state and published certificates.
+
 ## Enable LAN HTTPS after preflight
 
 1. In Authentik, set issuer mode to the application slug, register `https://godoxy.services.lan.zenobi.us/auth/callback`, and grant `godoxy-admins` access to the GoDoxy application. Follow [Deploy Authentik on services-lan](deploy-authentik.md#connect-godoxy-to-authentik).
-2. Install the three GoDoxy Podman secrets and create `/var/lib/godoxy/logs`, `/var/lib/godoxy/data`, `/var/lib/godoxy/certs`, `/var/lib/godoxy/config`, and `/var/lib/godoxy/error_pages` with ownership `1000:1000`. Follow the [services-lan deployment checklist](../../systems/services-lan/README.md#4-install-godoxy-secrets-certificate-and-state).
+2. Install the three GoDoxy Podman secrets and create its writable state directories with ownership `1000:1000`. Keep `/var/lib/godoxy/certs` root-owned with mode `0755`. Published certificate files retain owner `1000:1000`. Follow the [services-lan deployment checklist](../../systems/services-lan/README.md#4-install-godoxy-secrets-certificate-and-state).
 3. After the firewall policy is applied and checked from allowed and blocked networks, record the human approval. Then run the preflight and create the enable marker:
 
    ```bash

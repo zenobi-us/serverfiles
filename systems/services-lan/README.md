@@ -131,14 +131,14 @@ For exact provider values, secret handling, host requirements, and verification 
     ssh core@services.lan 'sudo podman secret create --replace godoxy-api-jwt-secret -'
   ```
 
-- [ ] Create GoDoxy's persistent state directories with user ID (UID) and group ID (GID) 1000 ownership:
+- [ ] Create GoDoxy's writable state directories with user ID (UID) and group ID (GID) 1000 ownership. Keep the certificate publication directory root-owned:
 
   ```bash
   ssh core@services.lan \
-    'sudo install -d -o 1000 -g 1000 /var/lib/godoxy/logs /var/lib/godoxy/data /var/lib/godoxy/certs /var/lib/godoxy/config /var/lib/godoxy/error_pages'
+    'sudo install -d -o 1000 -g 1000 /var/lib/godoxy/logs /var/lib/godoxy/data /var/lib/godoxy/config /var/lib/godoxy/error_pages; sudo install -d -o 0 -g 0 -m 0755 /var/lib/godoxy/certs'
   ```
 
-- [ ] Issue the certificate with the DNS-01 workflow in [Private LAN DNS and HTTPS deployment](../../docs/how-to/deploy-private-lan-dns-acme.md). Check both Subject Alternative Names and the renewal timer. Keep the private key outside Git.
+- [ ] Provision the contact email and DNS token, then deploy [the certificate declaration](certificates/services-lan.certificate) through [Private LAN DNS and HTTPS deployment](../../docs/how-to/deploy-private-lan-dns-acme.md). Deployment starts `certificate-services-lan.service` independently of GoDoxy. Check both Subject Alternative Names and `certificate-services-lan.timer`. Keep the private key outside Git.
 - [ ] Confirm the firewall restricts DNS and HTTPS to the LAN. After checking the active rules, create `/var/lib/godoxy/firewall-verified` as root with mode `0600`. Use the command in [Private LAN DNS and HTTPS deployment](../../docs/how-to/deploy-private-lan-dns-acme.md#enable-lan-https-after-preflight).
 
 ## 5. Enable GoDoxy and verify access

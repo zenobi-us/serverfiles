@@ -29,6 +29,12 @@ valheim.service
 
 For the Authentik deployment on `services-lan`, see [Deploy Authentik](deploy-authentik.md).
 
+For host-managed HTTPS certificates, add `certificates/<id>.certificate`.
+See the [certificate declaration reference](../reference/repository.md#certificatescertificate).
+Provision the contact-email file and DNS credential secret before deployment.
+The deployment creates and starts each certificate service without requiring GoDoxy or another consumer.
+Generated certificate timers do not need entries in `units`.
+
 Run the repository check:
 
 ```bash
