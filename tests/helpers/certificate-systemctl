@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+# Record consumer actions without touching the host service manager.
+set -euo pipefail
+printf '%s\n' "$*" >>"$TEST_ROOT/systemctl.log"
+case $1 in
+is-active) [[ ${CONSUMER_ACTIVE:-0} == 1 ]] ;;
+restart)
+	if [[ ${DEPLOYMENT_SMOKE:-0} == 1 ]]; then
+		[[ $2 == *.timer ]] && exit 0
+		[[ -f $TEST_ROOT/certs/current/chain.pem && -f $TEST_ROOT/certs/current/private.pem ]]
+		if [[ ${REQUIRE_TWO_CERTIFICATES:-0} == 1 ]]; then
+			[[ -f $TEST_ROOT/certs-second/current/chain.pem && -f $TEST_ROOT/certs-second/current/private.pem ]]
+		fi
+		[[ ${CONSUMER_FAIL:-0} == 0 ]]
+		install -m 0600 "$TEST_ROOT/certs/current/private.pem" "$TEST_ROOT/served.key"
+		exit
+	fi
+	case ${RESTART_FAIL:-never} in
+	always) exit 1 ;;
+	once)
+		if [[ ! -f $TEST_ROOT/restart-failed ]]; then
+			touch "$TEST_ROOT/restart-failed"
+			exit 1
+		fi
+		;;
+	esac
+	install -m 0600 "$TEST_ROOT/certs/current/private.pem" "$TEST_ROOT/served.key"
+	;;
+start)
+	if [[ $2 == *.timer ]]; then
+		touch "$TEST_ROOT/timer-active"
+	else
+		certificate=${2#certificate-}
+		certificate=${certificate%.service}
+		bash /etc/serverfiles/config/certificates/renew "/etc/serverfiles/config/certificates/$certificate.conf" production
+	fi
+	;;
+disable)
+	[[ $* != *certificate-*.timer* ]] || rm -f "$TEST_ROOT/timer-active"
+	;;
+daemon-reload | enable | stop) ;;
+*) exit 2 ;;
+esac

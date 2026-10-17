@@ -1,0 +1,329 @@
+#!/usr/bin/env bash
+set -euo pipefail
+export LC_ALL=C
+
+main() {
+	[[ $# == 1 && -d $1 && ! -L $1 ]] || fail 'usage: bin/render-certificates <rendered-release-directory>'
+	release=${1%/}
+	[[ -n $release ]] || fail 'the release must not be the filesystem root'
+	[[ ! -L $release/certificates ]] || fail 'certificates must not be a symbolic link'
+	[[ -d $release/certificates ]] || return 0
+
+	shopt -s nullglob dotglob
+	local sources=("$release/certificates/"*)
+	((${#sources[@]})) || return 0
+	local path
+	for path in config config/certificates systemd quadlets; do
+		[[ ! -L $release/$path ]] || fail "$path must not be a symbolic link"
+		[[ ! -e $release/$path || -d $release/$path ]] || fail "$path must be a directory"
+	done
+	for path in units certificate-units; do
+		[[ ! -L $release/$path ]] || fail "$path must not be a symbolic link"
+		[[ ! -e $release/$path || -f $release/$path ]] || fail "$path must be a regular file"
+	done
+	[[ ! -e $release/certificate-units ]] || fail 'certificate-units already exists and would be overwritten'
+	command -v systemd-analyze >/dev/null || fail 'systemd-analyze is required to validate OnCalendar'
+
+	stage=$(mktemp -d "$release/.certificates.XXXXXXXX")
+	trap 'rm -rf -- "$stage"' EXIT
+	mkdir -p "$stage/config" "$stage/systemd"
+	: >"$stage/certificate-units"
+	if [[ -f $release/units ]]; then
+		cp -- "$release/units" "$stage/units"
+	else
+		: >"$stage/units"
+	fi
+
+	declare -A claimed_paths=()
+	for path in "${sources[@]}"; do
+		[[ -f $path && ! -L $path && $path == *.certificate ]] || fail 'certificates may contain only regular *.certificate files'
+		compile_certificate "$path"
+	done
+
+	mkdir -p "$release/config/certificates" "$release/systemd"
+	for path in "$stage/config/"*; do
+		mv -- "$path" "$release/config/certificates/"
+	done
+	for path in "$stage/systemd/"*; do
+		mv -- "$path" "$release/systemd/"
+	done
+	mv -- "$stage/certificate-units" "$release/certificate-units"
+	mv -- "$stage/units" "$release/units"
+	rm -rf -- "$release/certificates"
+}
+
+fail() {
+	printf 'render-certificates: %s\n' "$1" >&2
+	exit 1
+}
+
+invalid() {
+	fail "$id: $1"
+}
+
+trim() {
+	trimmed=${1#"${1%%[! ]*}"}
+	trimmed=${trimmed%"${trimmed##*[! ]}"}
+}
+
+safe_path() {
+	local value=$1 part
+	[[ $value =~ ^/[A-Za-z0-9_.-]+(/[A-Za-z0-9_.-]+)+$ ]] || return 1
+	case $value in
+	/proc/* | /sys/* | /dev/* | /bin/* | /sbin/* | /usr/* | /boot/*) return 1 ;;
+	esac
+	local parts=()
+	IFS=/ read -r -a parts <<<"$value"
+	for part in "${parts[@]}"; do
+		[[ $part != . && $part != .. ]] || return 1
+	done
+}
+
+safe_filename() {
+	[[ $1 =~ ^[A-Za-z0-9][A-Za-z0-9_.-]*$ && ${#1} -le 255 ]]
+}
+
+valid_domain() {
+	local value=$1 label
+	[[ ${#value} -le 253 && $value == *.* && $value =~ ^[a-z0-9.-]+$ && ${value##*.} =~ ^[a-z][a-z0-9-]*[a-z0-9]$|^[a-z]$ ]] || return 1
+	local labels=()
+	IFS=. read -r -a labels <<<"$value"
+	[[ $value != *. ]] || return 1
+	for label in "${labels[@]}"; do
+		[[ ${#label} -le 63 && $label =~ ^[a-z0-9]([a-z0-9-]*[a-z0-9])?$ ]] || return 1
+	done
+}
+
+valid_ipv4() {
+	local value=$1 octet
+	[[ $value =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]] || return 1
+	local octets=()
+	IFS=. read -r -a octets <<<"$value"
+	for octet in "${octets[@]}"; do
+		[[ $octet =~ ^(0|[1-9][0-9]{0,2})$ ]] && ((10#$octet <= 255)) || return 1
+	done
+}
+
+valid_ipv6() {
+	local value=$1 group compressed=false
+	[[ $value =~ ^[0-9A-Fa-f:]+$ && $value == *:* && $value != *:::* ]] || return 1
+	if [[ $value == *::* ]]; then
+		compressed=true
+		local remainder=${value#*::}
+		[[ $remainder != *::* ]] || return 1
+		value=${value/::/:}
+		value=${value#:}
+		value=${value%:}
+	else
+		[[ $value != :* && $value != *: ]] || return 1
+	fi
+	local groups=()
+	IFS=: read -r -a groups <<<"$value"
+	for group in "${groups[@]}"; do
+		[[ $group =~ ^[0-9A-Fa-f]{1,4}$ ]] || return 1
+	done
+	if $compressed; then
+		((${#groups[@]} < 8))
+	else
+		((${#groups[@]} == 8))
+	fi
+}
+
+valid_resolver() {
+	local value=$1 host port
+	if [[ $value =~ ^\[([0-9A-Fa-f:]+)\]:([0-9]+)$ ]]; then
+		host=${BASH_REMATCH[1]}
+		port=${BASH_REMATCH[2]}
+		valid_ipv6 "$host" || return 1
+	elif [[ $value =~ ^([a-z0-9.-]+):([0-9]+)$ ]]; then
+		host=${BASH_REMATCH[1]}
+		port=${BASH_REMATCH[2]}
+		if [[ $host =~ ^[0-9.]+$ ]]; then
+			valid_ipv4 "$host" || return 1
+		else
+			valid_domain "$host" || return 1
+		fi
+	else
+		return 1
+	fi
+	[[ $port =~ ^[1-9][0-9]{0,4}$ ]] && ((10#$port <= 65535))
+}
+
+valid_identity() {
+	[[ $1 =~ ^(0|[1-9][0-9]{0,9})$ ]] && ((10#$1 <= 4294967294))
+}
+
+seconds() {
+	local value=$1 allow_zero=${2:-false} amount unit multiplier
+	[[ $value =~ ^(0|[1-9][0-9]{0,8})(s|sec|m|min|h|d|w)?$ ]] || return 1
+	amount=${BASH_REMATCH[1]}
+	unit=${BASH_REMATCH[2]}
+	case $unit in
+	'' | s | sec) multiplier=1 ;;
+	m | min) multiplier=60 ;;
+	h) multiplier=3600 ;;
+	d) multiplier=86400 ;;
+	w) multiplier=604800 ;;
+	esac
+	duration_seconds=$((amount * multiplier))
+	((duration_seconds <= 2147483647)) || return 1
+	$allow_zero || ((duration_seconds > 0))
+}
+
+claim_directory() {
+	local value=$1 other
+	for other in "${!claimed_paths[@]}"; do
+		[[ $value != "$other" && $value != "$other/"* && $other != "$value/"* ]] || invalid "directory/state overlaps ${claimed_paths[$other]}"
+	done
+	claimed_paths[$value]=$id
+}
+
+compile_certificate() {
+	local source=$1 filename=${1##*/}
+	local id=${filename%.certificate}
+	[[ $id =~ ^[a-z0-9][a-z0-9-]*$ && ${#id} -le 63 ]] || fail 'certificate filenames require a lowercase alphanumeric/hyphen identifier of at most 63 characters'
+	local service="certificate-$id.service" timer="certificate-$id.timer"
+	[[ ! -e $release/config/certificates/$id.conf && ! -L $release/config/certificates/$id.conf ]] || invalid 'generated configuration collides with an existing file'
+	local path
+	for path in "$release/systemd/$service" "$release/systemd/$timer" "$release/systemd/$service.d" "$release/systemd/$timer.d" "$release/quadlets/$service" "$release/quadlets/$timer" "$release/quadlets/certificate-$id.container" "$release/quadlets/certificate-$id.kube"; do
+		[[ ! -e $path && ! -L $path ]] || invalid 'generated unit collides with an existing unit'
+	done
+
+	local status=0
+	grep -q '[^ -~]' "$source" || status=$?
+	((status == 1)) || invalid 'declaration must contain printable ASCII without tabs or control characters'
+
+	local section='' line key value qualified trimmed line_number=0
+	local -A fields=() sections=() domain_seen=() resolver_seen=()
+	local domains=() resolvers=()
+	while IFS= read -r line || [[ -n $line ]]; do
+		line_number=$((line_number + 1))
+		trim "$line"
+		line=$trimmed
+		[[ -z $line || $line == \#* || $line == \;* ]] && continue
+		if [[ $line =~ ^\[([A-Za-z]+)\]$ ]]; then
+			section=${BASH_REMATCH[1]}
+			case $section in Unit | Certificate | Install | Timer) ;; *) invalid "unknown section at line $line_number" ;; esac
+			[[ ! ${sections[$section]+present} ]] || invalid "duplicate section at line $line_number"
+			sections[$section]=1
+			continue
+		fi
+		[[ -n $section && $line == *=* ]] || invalid "expected section or Key=Value at line $line_number"
+		trim "${line%%=*}"
+		key=$trimmed
+		trim "${line#*=}"
+		value=$trimmed
+		[[ -n $value ]] || invalid "empty value at line $line_number"
+		qualified=$section.$key
+		case $qualified in
+		Certificate.Domain)
+			valid_domain "$value" || invalid 'Domain requires a lowercase public DNS name; wildcards are unsupported'
+			[[ ! ${domain_seen[$value]+present} ]] || invalid 'duplicate Domain'
+			domain_seen[$value]=1
+			domains+=("$value")
+			continue
+			;;
+		Certificate.DNSResolver)
+			valid_resolver "$value" || invalid 'DNSResolver requires a DNS name or IP address and a valid port'
+			[[ ! ${resolver_seen[$value]+present} ]] || invalid 'duplicate DNSResolver'
+			resolver_seen[$value]=1
+			resolvers+=("$value")
+			continue
+			;;
+		Unit.Description | Certificate.Authority | Certificate.ContactEmailFile | Certificate.AcceptTermsOfService | Certificate.DNSProvider | Certificate.DNSCredential | Certificate.RenewBefore | Certificate.MinimumValidity | Certificate.StateDirectory | Install.Directory | Install.CertificateFile | Install.PrivateKeyFile | Install.User | Install.Group | Install.CertificateMode | Install.PrivateKeyMode | Install.RestartUnit | Timer.OnCalendar | Timer.Persistent | Timer.RandomizedDelaySec) ;;
+		*) invalid "unknown key at line $line_number" ;;
+		esac
+		[[ ! ${fields[$qualified]+present} ]] || invalid "duplicate key at line $line_number"
+		fields[$qualified]=$value
+	done <"$source"
+
+	for key in Unit.Description Certificate.Authority Certificate.ContactEmailFile Certificate.AcceptTermsOfService Certificate.DNSProvider Certificate.DNSCredential Install.Directory Install.CertificateFile Install.PrivateKeyFile Install.User Install.Group Timer.OnCalendar; do
+		[[ ${fields[$key]+present} ]] || invalid "missing $key"
+	done
+	((${#domains[@]})) || invalid 'at least one Domain is required'
+	[[ ${fields[Certificate.Authority]} == letsencrypt ]] || invalid 'Authority must be letsencrypt'
+	[[ ${fields[Certificate.AcceptTermsOfService]} == yes ]] || invalid 'AcceptTermsOfService must be yes'
+	[[ ${fields[Certificate.DNSProvider]} == cloudflare ]] || invalid 'DNSProvider must be cloudflare'
+	[[ ${fields[Certificate.DNSCredential]} =~ ^podman-secret:[a-zA-Z0-9][a-zA-Z0-9_.-]{0,252}$ ]] || invalid 'DNSCredential must name a safe podman-secret'
+	local description_pattern='^[A-Za-z0-9][A-Za-z0-9 .,:_()/+-]*$'
+	[[ ${fields[Unit.Description]} =~ $description_pattern ]] || invalid 'Description contains unsupported characters'
+
+	fields[Certificate.StateDirectory]=${fields[Certificate.StateDirectory]:-/var/lib/serverfiles/certificates/$id/acme}
+	fields[Certificate.RenewBefore]=${fields[Certificate.RenewBefore]:-30d}
+	fields[Certificate.MinimumValidity]=${fields[Certificate.MinimumValidity]:-14d}
+	fields[Install.CertificateMode]=${fields[Install.CertificateMode]:-0644}
+	fields[Install.PrivateKeyMode]=${fields[Install.PrivateKeyMode]:-0400}
+	fields[Timer.Persistent]=${fields[Timer.Persistent]:-true}
+	fields[Timer.RandomizedDelaySec]=${fields[Timer.RandomizedDelaySec]:-0}
+	for key in Certificate.ContactEmailFile Certificate.StateDirectory Install.Directory; do
+		safe_path "${fields[$key]}" || invalid "$key requires a safe absolute path with no dot segments"
+	done
+	for key in Certificate.StateDirectory Install.Directory; do
+		[[ ${fields[$key]} == /var/lib/* ]] || invalid "$key must be under /var/lib/"
+	done
+	for key in Install.CertificateFile Install.PrivateKeyFile; do
+		safe_filename "${fields[$key]}" || invalid "$key must be a safe filename, not a path"
+	done
+	[[ ${fields[Install.CertificateFile]} != "${fields[Install.PrivateKeyFile]}" ]] || invalid 'CertificateFile and PrivateKeyFile must differ'
+	for key in Install.User Install.Group; do
+		valid_identity "${fields[$key]}" || invalid "$key must be a numeric ID from 0 to 4294967294"
+	done
+	case ${fields[Install.CertificateMode]} in
+	0400 | 0440 | 0444 | 0600 | 0640 | 0644) ;;
+	*) invalid 'CertificateMode must be 0400, 0440, 0444, 0600, 0640 or 0644' ;;
+	esac
+	case ${fields[Install.PrivateKeyMode]} in
+	0400 | 0600) ;;
+	*) invalid 'PrivateKeyMode must be 0400 or 0600' ;;
+	esac
+	if [[ ${fields[Install.RestartUnit]+present} ]]; then
+		[[ ${fields[Install.RestartUnit]} =~ ^[A-Za-z0-9][A-Za-z0-9_.@-]*\.service$ && ${#fields[Install.RestartUnit]} -le 255 ]] || invalid 'RestartUnit must name one .service unit without escapes or specifiers'
+		[[ ${fields[Install.RestartUnit]} != "$service" ]] || invalid 'RestartUnit must not restart its own certificate service'
+	fi
+	local renew_days minimum_validity duration_seconds
+	[[ ${fields[Certificate.RenewBefore]} =~ ^([1-9][0-9]{0,5})d$ ]] || invalid 'RenewBefore requires positive whole days, for example 30d'
+	renew_days=${BASH_REMATCH[1]}
+	seconds "${fields[Certificate.MinimumValidity]}" || invalid 'MinimumValidity requires a positive duration in s, min, h, d or w'
+	minimum_validity=$duration_seconds
+	seconds "${fields[Timer.RandomizedDelaySec]}" true || invalid 'RandomizedDelaySec requires a nonnegative duration in s, min, h, d or w'
+	case ${fields[Timer.Persistent]} in yes | true | 1 | no | false | 0) ;; *) invalid 'Persistent must be yes, no, true, false, 1 or 0' ;; esac
+	[[ ${fields[Timer.OnCalendar]} =~ ^[A-Za-z0-9*,:./~+\ -]+$ && ${fields[Timer.OnCalendar]} != -* ]] || invalid 'OnCalendar contains unsupported characters'
+	TZ=UTC systemd-analyze calendar --iterations=1 -- "${fields[Timer.OnCalendar]}" >/dev/null 2>&1 || invalid 'OnCalendar is not a valid systemd calendar expression'
+	claim_directory "${fields[Install.Directory]}"
+	claim_directory "${fields[Certificate.StateDirectory]}"
+
+	{
+		printf 'Id\t%s\n' "$id"
+		for key in Certificate.ContactEmailFile Certificate.DNSProvider Certificate.DNSCredential; do
+			printf '%s\t%s\n' "${key#*.}" "${fields[$key]}"
+		done
+		for value in "${domains[@]}"; do printf 'Domain\t%s\n' "$value"; done
+		for value in "${resolvers[@]}"; do printf 'DNSResolver\t%s\n' "$value"; done
+		printf 'RenewDays\t%s\nMinimumValidity\t%s\n' "$renew_days" "$minimum_validity"
+		printf 'StateDirectory\t%s\n' "${fields[Certificate.StateDirectory]}"
+		for key in Install.Directory Install.CertificateFile Install.PrivateKeyFile Install.User Install.Group Install.CertificateMode Install.PrivateKeyMode Install.RestartUnit; do
+			[[ ${fields[$key]+present} ]] || continue
+			printf '%s\t%s\n' "${key#*.}" "${fields[$key]}"
+		done
+	} >"$stage/config/$id.conf"
+	{
+		printf '[Unit]\nDescription=%s\nWants=network-online.target\nAfter=network-online.target\n\n' "${fields[Unit.Description]}"
+		printf '[Service]\nType=oneshot\nUMask=0077\nExecStart=/etc/serverfiles/config/certificates/renew /etc/serverfiles/config/certificates/%s.conf production\nTimeoutStartSec=15min\n' "$id"
+	} >"$stage/systemd/$service"
+	{
+		printf '[Unit]\nDescription=Schedule %s\n\n[Timer]\n' "$service"
+		printf 'OnCalendar=%s\nPersistent=%s\nRandomizedDelaySec=%s\nUnit=%s\n\n[Install]\nWantedBy=timers.target\n' "${fields[Timer.OnCalendar]}" "${fields[Timer.Persistent]}" "${fields[Timer.RandomizedDelaySec]}" "$service"
+	} >"$stage/systemd/$timer"
+	printf '%s\n' "$service" >>"$stage/certificate-units"
+	if ! grep -Fxq -- "$timer" "$stage/units"; then
+		# Separate a pre-existing manifest's unterminated final line before appending.
+		local manifest=''
+		IFS= read -r -d '' manifest <"$stage/units" || :
+		if [[ -n $manifest && $manifest != *$'\n' ]]; then
+			printf '\n' >>"$stage/units"
+		fi
+		printf '%s\n' "$timer" >>"$stage/units"
+	fi
+}
+
+main "$@"

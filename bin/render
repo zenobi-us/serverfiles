@@ -17,4 +17,6 @@ cp -a "$root/systems/common/." "$output/"
 cp -a "$source_dir/." "$output/"
 rm -rf "$output/machine.toml" "$output/definitions" "$output/builds"
 
+"$root/bin/render-certificates" "$output"
+
 printf '%s\n' "$output"

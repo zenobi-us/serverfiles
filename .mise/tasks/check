@@ -6,15 +6,12 @@ command -v git >/dev/null
 command -v ssh >/dev/null
 command -v systemd-analyze >/dev/null
 
-shellcheck bin/* .mise/tasks/check .mise/tasks/container/* .mise/tasks/machine/*
-shfmt -d bin/* .mise/tasks/check .mise/tasks/container/* .mise/tasks/machine/*
+scripts=(bin/* .mise/tasks/check .mise/tasks/container/* .mise/tasks/machine/* systems/common/config/certificates/renew systems/services-lan/config/godoxy/preflight.sh tests/certificates tests/helpers/*)
+shellcheck "${scripts[@]}"
+shfmt -d "${scripts[@]}"
 
 for unit in systemd/*; do
 	SYSTEMD_UNIT_PATH="$PWD/systemd" systemd-analyze cat-config "$(basename "$unit")" >/dev/null
-done
-for script in systems/services-lan/config/acme/renew systems/services-lan/config/godoxy/preflight.sh; do
-	shellcheck "$script"
-	shfmt -d "$script"
 done
 
 for machine in systems/*; do
@@ -25,9 +22,11 @@ for machine in systems/*; do
 		exit 1
 	}
 	bin/render "$(basename "$machine")" >/dev/null
-	if [[ -d $machine/systemd ]]; then
-		for unit in "$machine"/systemd/*; do
-			SYSTEMD_UNIT_PATH="$PWD/$machine/systemd" systemd-analyze cat-config "$(basename "$unit")" >/dev/null
+	if [[ -d .rendered/$(basename "$machine")/systemd ]]; then
+		for unit in ".rendered/$(basename "$machine")"/systemd/*; do
+			SYSTEMD_UNIT_PATH="$PWD/.rendered/$(basename "$machine")/systemd" systemd-analyze cat-config "$(basename "$unit")" >/dev/null
 		done
 	fi
 done
+
+tests/certificates

@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+# Replace only the external ACME transport; the lifecycle tests use real OpenSSL validation and filesystem publication.
+set -euo pipefail
+
+if [[ $1 == secret && $2 == inspect ]]; then
+	exit 0
+fi
+[[ $1 == run ]] || exit 2
+if [[ ${PROVIDER_FAIL:-0} == 1 ]]; then
+	echo 'provider-secret-must-not-reach-journal' >&2
+	exit 1
+fi
+state=
+first_domain=
+while (($#)); do
+	case $1 in
+	--volume)
+		state=${2%:/acme:Z}
+		shift 2
+		;;
+	--domains)
+		[[ -n $first_domain ]] || first_domain=$2
+		shift 2
+		;;
+	*) shift ;;
+	esac
+done
+[[ -n $state && -n $first_domain ]]
+install -d -m 0700 "$state/certificates"
+cp "$CERTIFICATE_FIXTURE/leaf.crt" "$state/certificates/$first_domain.crt"
+cp "$TEST_ROOT/ca.crt" "$state/certificates/$first_domain.issuer.crt"
+cp "$CERTIFICATE_FIXTURE/key.pem" "$state/certificates/$first_domain.key"

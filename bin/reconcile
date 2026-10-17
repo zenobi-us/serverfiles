@@ -21,6 +21,7 @@ mapfile -t previous_native < <([[ -f $native_state ]] && cat "$native_state" || 
 mapfile -t wanted_units < <([[ -f $release/units ]] && sed '/^[[:space:]]*#/d; /^[[:space:]]*$/d' "$release/units" || true)
 mapfile -t wanted_files < <([[ -d $release/quadlets ]] && find "$release/quadlets" -maxdepth 1 -type f -printf '%f\n' | sort || true)
 mapfile -t wanted_native < <([[ -d $release/systemd ]] && find "$release/systemd" -maxdepth 1 -type f -printf '%f\n' | sort || true)
+mapfile -t certificate_units < <([[ -f $release/certificate-units ]] && cat "$release/certificate-units" || true)
 for unit in "${wanted_units[@]}"; do
 	if [[ $unit == *.timer ]] && systemctl is-active --quiet "$unit"; then
 		systemctl stop "$unit"
@@ -61,6 +62,39 @@ for file in "${wanted_native[@]}"; do
 	fi
 done
 
+# Installed-file ownership must survive issuance or application startup failures.
+printf '%s\n' "${wanted_files[@]}" >"$file_state"
+if ((${#wanted_native[@]})); then
+	printf '%s\n' "${wanted_native[@]}" >"$native_state"
+else
+	: >"$native_state"
+fi
+
+# A lock, rather than a marker, releases automatically if deployment is interrupted.
+if ((${#certificate_units[@]})); then
+	exec 8>/run/lock/serverfiles-certificate-deployment.lock
+	flock 8
+fi
+# Keep renewal scheduled even if issuance or a consumer fails during this apply.
+for unit in "${certificate_units[@]}"; do
+	systemctl start "${unit%.service}.timer"
+done
+
+# Publish certificates before applications start. Existing valid pairs remain usable without an online renewal dependency at boot.
+for unit in "${certificate_units[@]}"; do
+	systemctl start "$unit"
+done
+
+if ((${#certificate_units[@]})); then
+	flock -u 8
+	exec 8>&-
+	for unit in "${certificate_units[@]}"; do
+		certificate=${unit#certificate-}
+		certificate=${certificate%.service}
+		"$config/certificates/renew" "$config/certificates/$certificate.conf" activate
+	done
+fi
+
 for unit in "${previous_units[@]}"; do
 	if ! printf '%s\n' "${wanted_units[@]}" | grep -Fxq -- "$unit"; then
 		systemctl stop "$unit" || true
@@ -72,9 +106,3 @@ for unit in "${wanted_units[@]}"; do
 done
 
 printf '%s\n' "${wanted_units[@]}" >"$unit_state"
-printf '%s\n' "${wanted_files[@]}" >"$file_state"
-if ((${#wanted_native[@]})); then
-	printf '%s\n' "${wanted_native[@]}" >"$native_state"
-else
-	: >"$native_state"
-fi

@@ -1,0 +1,323 @@
+#!/usr/bin/env bash
+# Exercise compiled declarations and the shared runner with real certificates in an isolated root namespace.
+set -euo pipefail
+
+root=$(git rev-parse --show-toplevel)
+work=$(mktemp -d)
+trap 'rm -rf "$work"' EXIT
+for command in bwrap openssl systemd-analyze; do
+	command -v "$command" >/dev/null || {
+		echo "Certificate tests require $command" >&2
+		exit 1
+	}
+done
+sandbox=/var/lib/certificate-tests
+runner=$root/systems/common/config/certificates/renew
+trust_file=$(readlink -f /etc/ssl/certs/ca-certificates.crt)
+
+fail() {
+	echo "Certificate test failed: $1" >&2
+	exit 1
+}
+
+declaration() {
+	cat <<'CERTIFICATE'
+[Unit]
+Description=Storage certificate without a proxy dependency
+[Certificate]
+Authority=letsencrypt
+ContactEmailFile=/var/lib/certificate-tests/email
+AcceptTermsOfService=yes
+DNSProvider=cloudflare
+DNSCredential=podman-secret:test-dns-token
+Domain=storage.lan.example.test
+Domain=dashboard.lan.example.test
+DNSResolver=1.1.1.1:53
+RenewBefore=30d
+MinimumValidity=14d
+StateDirectory=/var/lib/certificate-tests/acme
+[Install]
+Directory=/var/lib/certificate-tests/certs
+CertificateFile=chain.pem
+PrivateKeyFile=private.pem
+User=0
+Group=0
+CertificateMode=0644
+PrivateKeyMode=0400
+[Timer]
+OnCalendar=daily
+Persistent=yes
+RandomizedDelaySec=5min
+CERTIFICATE
+}
+
+compile() {
+	local destination=$1
+	mkdir -p "$destination/certificates"
+	declaration >"$destination/certificates/storage.certificate"
+	"$root/bin/render-certificates" "$destination"
+}
+
+reject() {
+	local name=$1 extra=$2 section=${3:-Certificate} action=${4:-replace}
+	local destination=$work/reject-$name key=${2%%=*}
+	mkdir -p "$destination/certificates"
+	declaration | while IFS= read -r line; do
+		if [[ $action == replace && $line == "$key="* ]]; then
+			line=$extra
+		fi
+		printf '%s\n' "$line"
+		if [[ $action == append && $line == "[$section]" ]]; then
+			printf '%s\n' "$extra"
+		fi
+	done >"$destination/certificates/storage.certificate"
+	if "$root/bin/render-certificates" "$destination" >"$work/reject.log" 2>&1; then
+		fail "compiler accepted $name"
+	fi
+}
+
+make_leaf() {
+	local name=$1 sans=$2 days=$3
+	mkdir -p "$work/fixtures/$name"
+	openssl req -new -newkey rsa:2048 -nodes -subj /CN=storage.lan.example.test \
+		-keyout "$work/fixtures/$name/key.pem" -out "$work/fixtures/$name/request.pem" >/dev/null 2>&1
+	printf 'subjectAltName=%s\nbasicConstraints=CA:FALSE\nextendedKeyUsage=serverAuth\n' "$sans" >"$work/fixtures/$name/extensions"
+	openssl x509 -req -in "$work/fixtures/$name/request.pem" -CA "$work/ca.crt" -CAkey "$work/ca.key" \
+		-set_serial "$((++serial))" -days "$days" -extfile "$work/fixtures/$name/extensions" \
+		-out "$work/fixtures/$name/leaf.crt" >/dev/null 2>&1
+}
+
+set_config() {
+	local wanted=$1 replacement=$2 key value
+	while IFS=$'\t' read -r key value; do
+		if [[ $key == "$wanted" ]]; then
+			[[ $replacement != @remove ]] || continue
+			value=$replacement
+		fi
+		printf '%s\t%s\n' "$key" "$value"
+	done <"$work/release/config/certificates/storage.conf" >"$work/config.next"
+	mv "$work/config.next" "$work/release/config/certificates/storage.conf"
+}
+
+run_runner() {
+	local fixture=$1 mode=${2:-production} active=${3:-0} restart=${4:-never} provider_fail=${5:-0}
+	# The inner shell must expand the sandbox variables and positional arguments.
+	# shellcheck disable=SC2016
+	bwrap --unshare-user --uid 0 --gid 0 --ro-bind / / --dev /dev --proc /proc \
+		--tmpfs /run --dir /run/lock --tmpfs /var --dir /var/lib --ro-bind "$root" "$root" --bind "$work" "$sandbox" \
+		--ro-bind "$work/ca.crt" "$trust_file" \
+		--setenv PATH "$sandbox/bin:/usr/bin:/bin" --setenv TEST_ROOT "$sandbox" \
+		--setenv CERTIFICATE_FIXTURE "$sandbox/fixtures/$fixture" \
+		--setenv CONSUMER_ACTIVE "$active" --setenv RESTART_FAIL "$restart" --setenv PROVIDER_FAIL "$provider_fail" \
+		--setenv HOLD_DEPLOYMENT "${6:-0}" bash -c '
+			if [[ $HOLD_DEPLOYMENT == 1 ]]; then
+				exec 8>/run/lock/serverfiles-certificate-deployment.lock
+				flock 8
+				bash "$@"
+			else
+				exec bash "$@"
+			fi
+		' bash "$runner" "$sandbox/release/config/certificates/storage.conf" "$mode"
+}
+
+run_deploy() {
+	local release=$1 consumer_fail=${2:-0} active=${3:-0} require_two=${4:-0}
+	bwrap --unshare-user --uid 0 --gid 0 --ro-bind / / --dev /dev --proc /proc \
+		--tmpfs /run --dir /run/lock --tmpfs /var --dir /var/lib --ro-bind "$root" "$root" --bind "$work" "$sandbox" \
+		--bind "$work/etc" /etc --bind "$work/serverfiles" /var/lib/serverfiles \
+		--setenv PATH "$sandbox/bin:/usr/bin:/bin" --setenv TEST_ROOT "$sandbox" \
+		--setenv CERTIFICATE_FIXTURE "$sandbox/fixtures/second" --setenv DEPLOYMENT_SMOKE 1 \
+		--setenv CONSUMER_FAIL "$consumer_fail" --setenv CONSUMER_ACTIVE "$active" --setenv REQUIRE_TWO_CERTIFICATES "$require_two" \
+		bash "$root/bin/reconcile" "$sandbox/$release"
+}
+
+expect_failure() {
+	if output=$(run_runner "$@" 2>&1); then
+		fail 'runner accepted an invalid candidate or failed operation'
+	fi
+	[[ $output != *provider-secret-must-not-reach-journal* ]] || fail 'provider output leaked'
+}
+
+mkdir -p "$work/bin"
+cp "$root/tests/helpers/certificate-podman" "$work/bin/podman"
+cp "$root/tests/helpers/certificate-systemctl" "$work/bin/systemctl"
+printf 'operator@example.test\n' >"$work/email"
+compile "$work/release"
+reject unknown-key 'UnknownKey=yes' Certificate append
+reject duplicate-scalar 'RenewBefore=31d' Certificate append
+# Keep the expansion literal to prove that declarations cannot execute shell code.
+# shellcheck disable=SC2016
+reject shell-expansion 'ContactEmailFile=$(touch /tmp/certificate-injection)'
+reject unsafe-path 'Directory=/var/lib/../etc' Install
+reject outside-state 'StateDirectory=/etc/certificate-state'
+reject unsafe-consumer 'RestartUnit=example.service%other' Install append
+reject unsafe-permissions 'PrivateKeyMode=0644' Install
+
+mkdir -p "$work/overlap/certificates"
+declaration >"$work/overlap/certificates/one.certificate"
+declaration >"$work/overlap/certificates/two.certificate"
+if "$root/bin/render-certificates" "$work/overlap" >"$work/reject.log" 2>&1; then
+	fail 'compiler accepted overlapping certificate destinations'
+fi
+printf 'PASS: invalid declarations and overlapping destinations rejected\n'
+
+openssl req -x509 -newkey rsa:2048 -nodes -days 90 -subj /CN=Certificate-test-CA \
+	-addext basicConstraints=critical,CA:TRUE -keyout "$work/ca.key" -out "$work/ca.crt" >/dev/null 2>&1
+serial=0
+sans=DNS:dashboard.lan.example.test,DNS:storage.lan.example.test
+make_leaf first "$sans" 60
+make_leaf second "$sans" 60
+make_leaf extra "$sans,DNS:unexpected.example.test" 60
+make_leaf short "$sans" 1
+mkdir -p "$work/fixtures/mismatch" "$work/fixtures/untrusted"
+cp "$work/fixtures/first/leaf.crt" "$work/fixtures/mismatch/leaf.crt"
+cp "$work/fixtures/second/key.pem" "$work/fixtures/mismatch/key.pem"
+openssl req -x509 -newkey rsa:2048 -nodes -days 60 -subj /CN=storage.lan.example.test \
+	-addext "subjectAltName=$sans" -keyout "$work/fixtures/untrusted/key.pem" \
+	-out "$work/fixtures/untrusted/leaf.crt" >/dev/null 2>&1
+
+run_runner first staging
+run_runner untrusted staging
+[[ ! -e $work/certs/current ]] || fail 'staging published a certificate'
+[[ ! -e $work/systemctl.log ]] || fail 'staging contacted a consumer'
+printf 'PASS: staging validates without publication or a consumer\n'
+
+mkdir -p "$work/acme/production/accounts"
+printf 'existing-account\n' >"$work/acme/production/accounts/preserved"
+run_runner first
+[[ -L $work/certs/current ]] || fail 'initial issuance did not publish a release'
+cmp -s "$work/fixtures/first/key.pem" "$work/certs/current/private.pem" || fail 'wrong private key installed'
+[[ $(stat -c %a "$work/certs/current/private.pem") == 400 ]] || fail 'private key permissions are incorrect'
+[[ $(stat -c %a "$work/certs/current/chain.pem") == 644 ]] || fail 'certificate permissions are incorrect'
+[[ $(cat "$work/acme/production/accounts/preserved") == existing-account ]] || fail 'existing account state lost'
+[[ ! -e $work/systemctl.log ]] || fail 'certificate-only issuance contacted a consumer'
+previous=$(readlink "$work/certs/current")
+run_runner first
+[[ $(readlink "$work/certs/current") == "$previous" ]] || fail 'unchanged issuance replaced the release'
+printf 'PASS: independent issuance preserves account state, permissions, and unchanged release\n'
+
+set_config PrivateKeyMode 0600
+run_runner first
+[[ $(stat -c %a "$work/certs/current/private.pem") == 600 ]] || fail 'metadata-only change did not update the key mode'
+set_config PrivateKeyMode 0400
+run_runner first
+[[ $(stat -c %a "$work/certs/current/private.pem") == 400 ]] || fail 'metadata-only change did not restore the key mode'
+previous=$(readlink "$work/certs/current")
+chmod 0777 "$work"
+expect_failure first
+chmod 0700 "$work"
+ln -s "$sandbox" "$work/alias"
+set_config StateDirectory "$sandbox/alias/acme"
+expect_failure first
+set_config StateDirectory "$sandbox/acme"
+rm "$work/alias"
+[[ $(readlink "$work/certs/current") == "$previous" ]] || fail 'unsafe ancestor rejection changed the installed release'
+printf 'PASS: metadata-only updates apply and unsafe path ancestors are rejected\n'
+
+expect_failure first production 0 never 1
+[[ $(readlink "$work/certs/current") == "$previous" ]] || fail 'provider failure changed installed certificate'
+expect_failure extra
+[[ $(readlink "$work/certs/current") == "$previous" ]] || fail 'extra SAN changed installed certificate'
+expect_failure short
+[[ $(readlink "$work/certs/current") == "$previous" ]] || fail 'short-lived certificate was published'
+expect_failure mismatch
+[[ $(readlink "$work/certs/current") == "$previous" ]] || fail 'mismatched key was published'
+expect_failure untrusted
+[[ $(readlink "$work/certs/current") == "$previous" ]] || fail 'untrusted production certificate was published'
+printf 'PASS: issuance failure and invalid candidates preserve the installed pair\n'
+
+printf 'RestartUnit\tstorage.service\n' >>"$work/release/config/certificates/storage.conf"
+run_runner first production 1
+[[ ! -e $work/systemctl.log ]] || fail 'unchanged certificate restarted the consumer'
+expect_failure second production 1 once
+[[ $(readlink "$work/certs/current") == "$previous" ]] || fail 'restart failure did not restore previous release'
+cmp -s "$work/fixtures/first/key.pem" "$work/certs/current/private.pem" || fail 'rollback restored wrong key'
+cmp -s "$work/fixtures/first/key.pem" "$work/served.key" || fail 'recovery did not load the previous certificate pair'
+printf 'PASS: failed consumer restart restores the previous pair and attempts recovery\n'
+
+rm -f "$work/systemctl.log" "$work/restart-failed"
+run_runner second production 1
+[[ $(readlink "$work/certs/current") != "$previous" ]] || fail 'renewal did not publish a new release'
+cmp -s "$work/fixtures/second/key.pem" "$work/certs/current/private.pem" || fail 'renewal installed wrong key'
+cmp -s "$work/fixtures/second/key.pem" "$work/served.key" || fail 'consumer did not load the renewed certificate pair'
+printf 'PASS: renewal publishes a complete pair and restarts its configured consumer\n'
+
+rm -f "$work/systemctl.log"
+run_runner first production 1 never 0 1
+[[ -f $work/acme/production/pending-activation ]] || fail 'deferred publication did not record pending activation'
+[[ ! -e $work/systemctl.log ]] || fail 'deployment restarted a consumer before publication finished'
+run_runner first production 1 never 1
+[[ ! -e $work/acme/production/pending-activation ]] || fail 'activation did not clear its recovery record'
+cmp -s "$work/fixtures/first/key.pem" "$work/served.key" || fail 'interrupted deployment activation did not recover offline'
+printf 'PASS: deferred activation survives an interrupted deployment and completes without DNS access\n'
+
+run_runner second production 1 never 0 1
+set_config PrivateKeyMode 0600
+run_runner second production 1 never 0 1
+[[ $(stat -c %a "$work/certs/current/private.pem") == 600 ]] || fail 'pending activation skipped changed declaration metadata'
+set_config RestartUnit @remove
+set_config PrivateKeyMode 0400
+run_runner second production 1 never 0 1
+[[ $(stat -c %a "$work/certs/current/private.pem") == 400 ]] || fail 'removing a consumer skipped declaration changes'
+[[ ! -e $work/acme/production/pending-activation ]] || fail 'removing a consumer retained pending activation'
+cmp -s "$work/fixtures/first/key.pem" "$work/served.key" || fail 'removing a consumer restarted it'
+printf 'RestartUnit\tstorage.service\n' >>"$work/release/config/certificates/storage.conf"
+previous=$(readlink "$work/certs/current")
+printf '%s\nreleases/unpublished\n' "$previous" >"$work/acme/production/pending-activation"
+run_runner second activate 1 never 1
+[[ ! -e $work/acme/production/pending-activation && $(readlink "$work/certs/current") == "$previous" ]] || fail 'abandoned preparation did not preserve the previous release'
+cmp -s "$work/fixtures/first/key.pem" "$work/served.key" || fail 'abandoned preparation restarted a consumer'
+printf 'PASS: reapplying pending certificates honors metadata changes and consumer removal\n'
+
+# Apply real generated releases through reconciliation. Only the service manager and DNS transport are replaced.
+mkdir -p "$work/etc/ssl/certs" "$work/serverfiles"
+cp "$work/ca.crt" "$work/etc/ssl/certs/ca-certificates.crt"
+cp "$runner" "$work/release/config/certificates/renew"
+printf '#!/usr/bin/env bash\nexit 0\n' >"$work/bin/restorecon"
+chmod +x "$work/bin/restorecon"
+printf 'storage.service\n' >>"$work/release/units"
+if run_deploy release 1; then
+	fail 'application startup failure did not fail deployment'
+fi
+[[ -f $work/timer-active ]] || fail 'consumer failure prevented certificate scheduling'
+[[ -f $work/etc/systemd/system/certificate-storage.service ]] || fail 'certificate service was not installed'
+[[ -f $work/serverfiles/managed-systemd-units ]] || fail 'failed application startup lost certificate ownership'
+printf 'PASS: deployment schedules certificates independently of consumer startup failure\n'
+bwrap --unshare-user --uid 0 --gid 0 --ro-bind / / --dev /dev --proc /proc \
+	--tmpfs /tmp --ro-bind "$work/etc" /etc systemd-analyze verify --man=no \
+	/etc/systemd/system/certificate-storage.service /etc/systemd/system/certificate-storage.timer
+
+run_runner first production 0
+mkdir -p "$work/shared-consumer/certificates"
+for certificate in storage zz-secondary; do
+	declaration | while IFS= read -r line; do
+		if [[ $certificate == zz-secondary ]]; then
+			case $line in
+			StateDirectory=*) line="StateDirectory=$sandbox/acme-second" ;;
+			Directory=*) line="Directory=$sandbox/certs-second" ;;
+			esac
+		fi
+		printf '%s\n' "$line"
+		if [[ $line == '[Install]' ]]; then
+			printf 'RestartUnit=storage.service\n'
+		fi
+	done >"$work/shared-consumer/certificates/$certificate.certificate"
+done
+"$root/bin/render-certificates" "$work/shared-consumer"
+cp "$runner" "$work/shared-consumer/config/certificates/renew"
+printf 'storage.service\n' >>"$work/shared-consumer/units"
+run_deploy shared-consumer 0 1 1
+[[ -f $work/certs-second/current/chain.pem ]] || fail 'shared consumer did not receive its second certificate'
+[[ ! -e $work/acme/production/pending-activation && ! -e $work/acme-second/production/pending-activation ]] || fail 'batch activation left pending certificates'
+printf 'PASS: all certificates publish before a shared active consumer restarts\n'
+
+mkdir -p "$work/without-certificates/config/certificates"
+cp "$runner" "$work/without-certificates/config/certificates/renew"
+printf 'storage.service\n' >"$work/without-certificates/units"
+run_deploy without-certificates
+[[ ! -e $work/timer-active ]] || fail 'removing declaration did not disable its timer'
+[[ ! -e $work/etc/systemd/system/certificate-storage.service ]] || fail 'removing declaration left its service installed'
+[[ ! -e $work/etc/systemd/system/certificate-zz-secondary.service ]] || fail 'removing declarations left the second service installed'
+cmp -s "$work/fixtures/second/key.pem" "$work/certs/current/private.pem" || fail 'declaration removal deleted the installed key'
+[[ -f $work/acme/production/accounts/preserved ]] || fail 'declaration removal deleted ACME account state'
+printf 'PASS: declaration removal retires managed units while retaining certificate and account state\n'
